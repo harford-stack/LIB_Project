@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가을날의 서재 - 로그인</title>
+    <link rel="stylesheet" href="LIB_Style_Mobile.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        // 헤더와 푸터를 동적으로 불러오는 함수
+        function loadHeaderFooter() {
+            // 헤더 로드
+            fetch('LIB_Header.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
+                    const headerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('header');
+                    document.getElementById('header-container').appendChild(headerContent);
+                });
+            
+            // 푸터 로드
+            fetch('LIB_Footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
+                    const footerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('footer');
+                    document.getElementById('footer-container').appendChild(footerContent);
+                });
+        }
+    </script>
+    <style>
+        /* 로그인 페이지 전체 컨테이너 */
+        .login-container {
+            max-width: 360px; /* 모바일 고정 폭 내에서 로그인 박스의 최대 너비 */
+            margin: 30px auto; /* #main-content 내부에서의 상하 마진 및 좌우 자동 중앙 정렬 */
+            padding: 30px 25px 40px;
+            background: #fefcf7;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(176, 122, 58, 0.2);
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #5a4631;
+        }
+
+        /* 제목 스타일 */
+        .login-container h2 {
+            margin-bottom: 25px;
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #8c6c4b;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        /* 라벨 스타일 */
+        .login-container label {
+            font-weight: 600;
+            color: #6f5a3e;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        /* 입력 필드 스타일 */
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 90%;
+            padding: 12px 14px;
+            font-size: 1rem;
+            border: 1.8px solid #d9caae;
+            border-radius: 12px;
+            background-color: #fefcf7;
+            color: #5a4631;
+            margin-bottom: 18px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-container input[type="text"]:focus,
+        .login-container input[type="password"]:focus {
+            border-color: #b07a3a;
+            outline: none;
+            box-shadow: 0 0 10px rgba(176, 122, 58, 0.4);
+        }
+
+        /* 로그인 버튼 스타일 */
+        .login-container button.login-btn {
+            width: 100%;
+            background-color: #a06934;
+            color: #fff9f0;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 0;
+            font-weight: 700;
+            font-size: 1.15rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(160, 105, 52, 0.6);
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            /* #main-content 안에 있을 때 전역 button 스타일과 충돌 방지 */
+            margin-left: 0; 
+            margin-right: 0;
+        }
+
+        .login-container button.login-btn:hover {
+            background-color: #8a5a2e;
+        }
+
+        /* 링크 스타일 (아이디/비밀번호 찾기 영역) */
+        .login-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #6f5a3e;
+        }
+
+        .login-links a {
+            color: #b07a3a;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .login-links a:hover {
+            color: #8c6c4b;
+            text-decoration: underline;
+        }
+        .login-links span {
+            color: #d9caae;
+        }
+
+
+        /* 회원가입 영역 */
+        .signup-area {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 1rem;
+            color: #6f5a3e;
+        }
+
+        .signup-area p {
+            margin-bottom: 10px;
+            color: #6f5a3e;
+        }
+
+        /* 회원가입 링크 (버튼처럼 보이게) */
+        .signup-area a {
+            display: inline-block;
+            background-color: #b07a3a;
+            color: #fff9f0;
+            padding: 12px 30px;
+            border-radius: 18px;
+            margin-top: 15px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(176, 122, 58, 0.6);
+            transition: background-color 0.3s ease;
+        }
+
+        .signup-area a:hover {
+            background-color: #a06934;
+        }
+
+        /* 반응형 (기존 전역 스타일에서 처리될 수 있으므로, 로그인 폼 자체의 작은 화면 대응) */
+        @media (max-width: 400px) {
+            .login-container {
+                margin: 20px 10px;
+                padding: 25px 20px 30px;
+                box-shadow: none; /* 모바일 풀스크린에서는 그림자 제거 */
+            }
+            .login-container h2 {
+                font-size: 2rem;
+            }
+            .login-container button.login-btn,
+            .signup-area a {
+                font-size: 1rem;
+                padding: 12px 0;
+            }
+        }
+    </style>
+</head>
+
+<body onload="loadHeaderFooter()">
+    <div id="app"> <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+        <div id="header-container"></div>
+        <div id="main-content">
+            <div class="login-container">
+                <h2>로그인</h2>
+                <div>
+                    <label>
+                        아이디 : 
+                        <input type="text" v-model="userId" id="userId_input" placeholder="아이디 입력">
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        비밀번호 : <input type="password" v-model="pwd" id="pwd_input" placeholder="비밀번호 입력">
+                    </label>
+                </div>
+                <div>
+                    <button @click="fnLogin">로그인</button>
+                </div>
+                <div class="login-links">
+                    <a href="LIB_FindId.html">아이디 찾기</a>
+                    <span> | </span>
+                    <a href="LIB_FindPwd.html">비밀번호 찾기</a>
+                </div>
+
+                <div class="signup-area">
+                    <p>아직 회원이 아니신가요?</p>
+                    <a href="LIB_Join.html">회원가입</a>
+                </div>
+            </div>
+        </div>
+        <div id="footer-container"></div>
+    </div>
+</body>
+</html>
+
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                // 변수 - (key : value)
+                userId : "",
+                pwd : ""
+            };
+        },
+        methods: {
+            // 함수(메소드) - (key : function())
+            fnLogin: function () {
+                let self = this;
+
+                // 아이디 입력 확인
+                if (!self.userId || self.userId.trim() === "") {
+                    // trim() => 문자열 양쪽 끝의 모든 공백(스페이스, 탭, 줄바꿈 등)을 제거
+                    alert("아이디를 입력해주세요");
+                    // 아이디 필드 포커스
+                    document.getElementById("userId_input").focus();
+                    return;
+                }
+                
+                // 비밀번호 입력 확인
+                if (!self.pwd || self.pwd.trim() === "") {
+                    alert("비밀번호를 입력해주세요");
+                    // 비번 필드 포커스
+                    document.getElementById("pwd_input").focus();
+                    return;
+                }
+
+                let param = {
+                    userId : self.userId.trim(),
+                    pwd : self.pwd.trim()
+                };
+                $.ajax({
+                    url: "http://localhost:3009/lib/login",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        if(data.length > 0) {
+                            // 로그인 성공
+                            alert(data[0].NAME + "님 환영합니다");
+                            sessionStorage.setItem("sessionId", data[0].USERID);
+                            sessionStorage.setItem("sessionName", data[0].NAME);
+                            location.href="LIB_Main.html"
+                        } else {
+                            // 로그인 실패
+                            alert("아이디 또는 비밀번호를 확인해주세요");
+                            
+                            // 기존 입력 내용 지우기
+                            self.userId = "";
+                            self.pwd = "";
+
+                            // 아이디 필드 포커스
+                            document.getElementById("userId_input").focus();
+                        }
+                    }
+                });
+            }
+        }, // methods
+        mounted() {
+            // 처음 시작할 때 실행되는 부분
+            let self = this;
+        }
+    });
+    app.mount('#app');
+</script>

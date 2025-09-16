@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디카페 좌석 예약</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 5px;
+        }
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .btn-back-to-main {
+            background-color: #6c757d; /* 회색 계열로 메인 버튼과 구분 */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s;
+        }
+        .btn-back-to-main:hover {
+            background-color: #5a6268;
+        }
+        .reservation-policy-info {
+            background-color: #fff3cd; /* 경고 옐로우 배경색 */
+            color: #856404; /* 경고 옐로우 글씨색 */
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.95em;
+        }
+        .reservation-policy-info p {
+            margin: 5px 0;
+        }
+        /* 비활성화된 입력 필드 (날짜, 시간 선택) */
+        input[type="date"]:disabled,
+        select:disabled {
+            background-color: #e9ecef; /* 약간 어두운 회색 배경 */
+            color: #6c757d;           /* 텍스트 색상도 회색으로 */
+            cursor: not-allowed;      /* 금지 커서 */
+            border-color: #ced4da;    /* 테두리 색상 조정 */
+            opacity: 0.8;             /* 약간 투명하게 */
+        }
+
+        /* 비활성화된 좌석 스타일 */
+        /* .seat는 기존 스타일이 있을 것으로 예상되며, .disabled 클래스만 추가적으로 적용됩니다. */
+        .seat.disabled {
+            opacity: 0.5;           /* 비활성 시 투명도 감소 */
+            cursor: not-allowed;    /* 금지 커서 */
+            pointer-events: none;   /* 클릭 이벤트를 완전히 차단 (가장 중요!) */
+            /* background-color 등은 필요에 따라 기존 .seat 스타일에 덮어쓰거나 추가 */
+        }
+
+        /* 예약하기 버튼 (확실히 비활성화임을 강조) */
+        /* .btn-reserve는 현재 HTML에 존재하는 클래스입니다. */
+        .btn-reserve:disabled {
+            background-color: #cccccc !important; /* 회색 배경 */
+            color: #666666 !important;           /* 텍스트 색상도 회색 */
+            cursor: not-allowed !important;      /* 금지 커서 */
+            border-color: #aaaaaa !important;    /* 테두리 색상 조정 */
+            opacity: 0.7;                        /* 약간 투명하게 */
+        }
+
+        /* 활성 예약 경고 메시지 스타일 (새로 추가) */
+        .active-reservation-warning {
+            background-color: #fff3cd; /* 경고를 나타내는 연한 노랑 */
+            color: #856404;           /* 진한 노란색 텍스트 */
+            padding: 15px 20px;       /* 내부 여백 */
+            margin-bottom: 20px;      /* 아래 여백 */
+            border: 1px solid #ffeeba; /* 테두리 */
+            border-radius: 8px;       /* 둥근 모서리 */
+            text-align: center;       /* 텍스트 중앙 정렬 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08); /* 그림자 효과 */
+        }
+
+        .active-reservation-warning h3 {
+            color: #856404; /* 제목 색상 */
+            margin-top: 0;   /* 상단 여백 제거 */
+            margin-bottom: 10px; /* 제목 아래 여백 */
+            font-size: 1.4em; /* 제목 크기 */
+        }
+
+        .active-reservation-warning p {
+            margin: 5px 0; /* 단락 상하 여백 */
+        }
+
+        /* 경고 메시지 내 '내 예약 확인하기' 버튼 스타일 */
+        .active-reservation-warning .btn-view-reservations {
+            background-color: #ffc107; /* 경고 관련 버튼 색상 */
+            color: #212529;           /* 어두운 텍스트 */
+            border: none;             /* 테두리 없음 */
+            padding: 10px 20px;       /* 내부 여백 */
+            border-radius: 5px;       /* 둥근 모서리 */
+            cursor: pointer;          /* 클릭 가능 커서 */
+            margin-top: 15px;         /* 상단 여백 */
+            font-weight: bold;        /* 글씨 두껍게 */
+            transition: background-color 0.3s ease; /* 호버 시 부드러운 전환 */
+        }
+
+        .active-reservation-warning .btn-view-reservations:hover {
+            background-color: #e0a800; /* 호버 시 색상 변경 */
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+        .date-selection {
+            text-align: center;
+        }
+        .date-selection input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .seat-map-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .seat-layout {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .regular-seats {
+            position: absolute;
+            display: flex;
+        }
+        .regular-seats.left {
+            left: 50px;
+            top: 50px;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .regular-seats.bottom {
+            left: 200px;
+            bottom: 40px;
+            flex-direction: row;
+            gap: 10px;
+        }
+        .private-rooms {
+            position: absolute;
+            top: 50px;
+            left: 200px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .group-rooms {
+            position: absolute;
+            top: 50px;
+            right: 200px;
+            display: grid;
+            gap: 15px;
+        }
+        .laptop-seats {
+            position: absolute;
+            top: 200px;
+            left: 270px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .seat {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .seat.available {
+            background-color: #4CAF50;
+        }
+        .seat.occupied {
+            background-color: #f44336;
+            cursor: not-allowed;
+        }
+        .seat.selected {
+            background-color: #2196F3;
+            transform: scale(1.05);
+        }
+        .private-room {
+            width: 80px;
+            height: 80px;
+            background-color: #9C27B0;
+        }
+        .group-room {
+            width: 100px;
+            height: 80px;
+            background-color: #FF9800;
+        }
+        .laptop-seat {
+            background-color: #3F51B5;
+        }
+        .break-room {
+            position: absolute;
+            bottom: 140px;
+            right: 200px;
+            width: 100px;
+            height: 120px;
+            background-color: #607D8B; /* 어두운 회색조 */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+        .entrance-door {
+            position: absolute;
+            bottom: 40px;
+            right: 200px;
+            width: 100px;
+            height: 50px;
+            background-color: #607D8B; /* 어두운 회색조 */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+        .seat-info {
+            position: absolute;
+            left: 85%;
+            top: 50%;
+            transform: translate(-15%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            z-index: 10;
+            max-width: 500px;
+        }
+        .time-selection {
+            margin-top: 2rem;
+        }
+        .time-slots {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .time-selector {
+            flex: 1;
+        }
+        .time-selector label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .time-selector select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .reservation-summary {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .btn-reserve {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        .btn-reserve:hover {
+            background-color: #45a049;
+        }
+        .success-message {
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .error-message {
+            background-color: #f2dede;
+            color: #a94442;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>스터디카페 좌석 예약</h1>
+        </header>
+
+        <main>
+            <div style="text-align: right; margin-bottom: 20px;">
+                <button class="btn-back-to-main" @click="goToMainPage">메인으로 돌아가기</button>
+            </div>
+            <!-- <div class="reservation-policy-info">
+                <p>※ 스터디카페는 쾌적한 환경 유지를 위해 **1인 1예약**을 원칙으로 합니다.</p>
+                <p>※ 진행 중인 예약(다가올 예정)이 있는 경우, 새로운 좌석 예약이 불가합니다. 예약 내역을 확인해 주세요.</p>
+            </div> -->
+            <!-- 날짜 선택 영역 -->
+            <section class="date-selection">
+                <h2>예약 날짜 선택</h2>
+                <input type="date" v-model="selectedDate" :min="today">
+            </section>
+
+            <!-- 시간 선택 영역 (날짜 선택 아래로 이동) -->
+            <section class="time-selection">
+                <h2>이용 시간 선택</h2>
+                <div class="time-slots">
+                    <div class="time-selector">
+                        <label for="startTime">시작 시간:</label>
+                        <select id="startTime" v-model="startHour">
+                            <option value="">시작 시간 선택</option>
+                            <option v-for="hour in availableHours" :value="hour">{{ hour }}:00</option>
+                        </select>
+                    </div>
+                    <div class="time-selector">
+                        <label for="endTime">종료 시간:</label>
+                        <select id="endTime" v-model="endHour" :disabled="!startHour">
+                            <option value="">종료 시간 선택</option>
+                            <option v-for="hour in getAvailableEndHours()" :value="hour">{{ hour }}:00</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 좌석 맵 영역 -->
+            <section class="seat-map" v-if="startHour && endHour">
+                <h2>좌석 선택 (선택된 시간: {{ startHour }}:00 ~ {{ endHour }}:00)</h2>
+                <div class="seat-map-container">
+                    <!-- 좌석 배치도 -->
+                    <div class="seat-layout">
+                        <!-- 일반석 영역 (왼쪽) -->
+                        <div class="regular-seats left">
+                            <div v-for="seat in regularSeatsLeft" :key="seat.seatno"
+                                :class="['seat', getSeatStatusClass(seat)]" @click="selectSeat(seat)">
+                                {{ seat.location }}
+                            </div>
+                        </div>
+
+                        <!-- 일반석 영역 (아래쪽) -->
+                        <div class="regular-seats bottom">
+                            <div v-for="seat in regularSeatsBottom" :key="seat.seatno"
+                                :class="['seat', getSeatStatusClass(seat)]" @click="selectSeat(seat)">
+                                {{ seat.location }}
+                            </div>
+                        </div>
+
+                        <!-- 1인실 영역 -->
+                        <div class="private-rooms">
+                            <div v-for="seat in privateRooms" :key="seat.seatno"
+                                :class="['seat', 'private-room', getSeatStatusClass(seat)]" @click="selectSeat(seat)">
+                                {{ seat.location }}
+                            </div>
+                        </div>
+
+                        <!-- 그룹실 영역 -->
+                        <div class="group-rooms">
+                            <div v-for="seat in groupRooms" :key="seat.seatno"
+                                :class="['seat', 'group-room', getSeatStatusClass(seat)]" @click="selectSeat(seat)">
+                                {{ seat.location }} ({{ seat.capacity }}인실)
+                            </div>
+                        </div>
+
+                        <!-- 노트북석 영역 -->
+                        <div class="laptop-seats">
+                            <div v-for="seat in laptopSeats" :key="seat.seatno"
+                                :class="['seat', 'laptop-seat', getSeatStatusClass(seat)]" @click="selectSeat(seat)">
+                                {{ seat.location }}
+                            </div>
+                        </div>
+                        <!-- 휴게싫 영역 추가 -->
+                        <div class="break-room">휴게실</div>
+                        <!-- 출입문 영역 추가 -->
+                        <div class="entrance-door">출입문</div>
+                        <!-- 좌석 정보 표시 -->
+                        <div class="seat-info" v-if="selectedSeat">
+                            <h3>{{ selectedSeat.location }} 좌석 정보</h3>
+                            <p>{{ selectedSeat.seat_notes }}</p>
+                            <p>좌석 유형: {{ getSeatTypeName(selectedSeat.typeno) }}</p>
+                            <p>시간당 가격: {{ getSeatTypePrice(selectedSeat.typeno) }}원</p>
+                            <p>상태: {{ selectedSeat.seatstatus }}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 예약 요약 및 버튼 (selectedSeat도 선택되어야만 보이도록 조건 추가) -->
+            <section v-if="selectedSeat && selectedSeat.seatstatus === 'AVAILABLE' && startHour && endHour">
+                <div class="reservation-summary">
+                    <h3>예약 정보 요약</h3>
+                    <p>선택 좌석: {{ selectedSeat.location }}</p>
+                    <p>예약 날짜: {{ formatDate(selectedDate) }}</p>
+                    <p>이용 시간: {{ startHour }}:00 ~ {{ endHour }}:00 ({{ endHour - startHour }}시간)</p>
+                    <p>총 금액: {{ calculateTotalPrice() }}원</p>
+                    <button @click="makeReservation" class="btn-reserve reserve-btn">예약하기</button>
+                </div>
+
+                <div v-if="message" :class="isSuccess ? 'success-message' : 'error-message'">
+                    {{ message }}
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
+
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                // 날짜 관련
+                selectedDate: new Date().toISOString().split('T')[0],
+                today: new Date().toISOString().split('T')[0],
+
+                // 좌석 관련
+                allSeats: [],
+                seatTypes: [],
+                selectedSeat: null,
+
+                // 시간 관련
+                startHour: null,
+                endHour: null,
+                availableHours: Array.from({ length: 14 }, (_, i) => i + 9), // 9시부터 22시까지
+
+                // 사용자 정보 (로그인 사용자 정보를 세션에서 가져올 예정)
+                userId: '',
+
+                // 예약 상태 메시지
+                message: '',
+                isSuccess: false,
+
+                hasActiveReservation: false,
+                activeReservationWarningDisplayed: false
+            };
+        },
+        computed: {
+            // 좌석 유형별로 분류
+            regularSeatsLeft() {
+                return this.allSeats.filter(seat =>
+                    seat.typeno === 1 && seat.location.includes('A'));
+            },
+            regularSeatsBottom() {
+                return this.allSeats.filter(seat =>
+                    seat.typeno === 1 && seat.location.includes('B'));
+            },
+            privateRooms() {
+                return this.allSeats.filter(seat => seat.typeno === 2);
+            },
+            groupRooms() {
+                return this.allSeats.filter(seat => seat.typeno === 3);
+            },
+            laptopSeats() {
+                return this.allSeats.filter(seat => seat.typeno === 4);
+            }
+        },
+        methods: {
+            goToMainPage() {
+                location.href = "LIB_Main.html";
+            },
+            // 좌석 상태에 따른 CSS 클래스 반환
+            getSeatStatusClass(seat) {
+                if (seat.seatstatus === 'OCCUPIED') return 'occupied';
+                if (this.selectedSeat && this.selectedSeat.seatno === seat.seatno) return 'selected';
+                return 'available';
+            },
+
+            // 좌석 유형 이름 가져오기
+            getSeatTypeName(typeNo) {
+                const type = this.seatTypes.find(type => type.typeno === typeNo);
+                return type ? type.typename : '';
+            },
+
+            // 좌석 유형 가격 가져오기
+            getSeatTypePrice(typeNo) {
+                const type = this.seatTypes.find(type => type.typeno === typeNo);
+                return type ? type.price : 0;
+            },
+
+            // 좌석 선택
+            selectSeat(seat) {
+                console.log('좌석 클릭됨:', seat); 
+                if (seat.seatstatus === 'OCCUPIED') {
+                    alert('이미 예약된 좌석입니다. 다른 시간을 선택하거나 다른 좌석을 선택해주세요.');
+                    this.selectedSeat = null; // 선택된 좌석 초기화
+                    return;
+                }
+                this.selectedSeat = seat;
+            },
+            // 선택한 시작 시간에 따른 가능한 종료 시간 목록 반환
+            getAvailableEndHours() {
+                if (!this.startHour) return [];
+                // 시작 시간 이후의 시간만 선택 가능
+                return this.availableHours.filter(hour => hour > this.startHour);
+            },
+
+            // 날짜 포맷팅
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+            },
+
+            // 총 가격 계산
+            calculateTotalPrice() {
+                if (!this.startHour || !this.endHour || !this.selectedSeat) return 0;
+
+                const hours = this.endHour - this.startHour;
+                const hourlyPrice = this.getSeatTypePrice(this.selectedSeat.typeno);
+                return hours * hourlyPrice;
+            },
+
+            // 예약하기
+            makeReservation() {
+                if (this.hasActiveReservation) {
+                    this.showActiveReservationWarning(); // 경고창을 다시 보여줌
+                    return;
+                }
+                let self = this;
+                // 이 부분은 이미 mounted에서 체크했지만, 버튼 클릭 시점에도 다시 한번 확인
+                if (!self.userId) {
+                    alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.'); 
+                    location.href = "LIB_Login.html"; 
+                    return;
+                }
+                if (!self.selectedSeat || !self.startHour || !self.endHour) {
+                    alert('좌석, 시작 시간, 종료 시간을 모두 선택해주세요.');
+                    return;
+                }
+                // 예약 정보 객체 생성
+                const reservationData = {
+                    userId: this.userId,
+                    seatNo: this.selectedSeat.seatno,
+                    resvDate: this.selectedDate,
+                    startHour: this.startHour,
+                    endHour: this.endHour,
+                    totalPrice: this.calculateTotalPrice()
+                };
+
+                // AJAX를 통한 예약 처리
+                $.ajax({
+                    url: "http://localhost:3009/reservation",
+                    dataType: "json",
+                    type: "GET",
+                    data: reservationData,
+                    success: function (data) {
+                        if (data.success) {
+                            self.message = '예약이 성공적으로 완료되었습니다! 메인 페이지로 이동합니다.';
+                            self.isSuccess = true;
+                            alert(self.message);
+                            location.href = "LIB_Main.html";
+                            
+                            // 예약 후 좌석 정보를 다시 불러와서 예약된 상태를 반영
+                            self.loadSeats();
+                            // 예약 정보 초기화
+                            self.selectedSeat = null;
+                            self.startHour = null; // 시간 선택 초기화
+                            self.endHour = null;   // 시간 선택 초기화
+                        } else {
+                            self.message = '예약 처리 중 오류가 발생했습니다: ' + data.message;
+                            self.isSuccess = false;
+                            alert(self.message); 
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        self.message = '예약 처리 중 서버 통신 오류가 발생했습니다.';
+                        self.isSuccess = false;
+                        alert(self.message); 
+                    }
+                });
+            },
+
+            // 좌석 정보 불러오기
+            loadSeats() {
+                let self = this;
+                // 날짜, 시작 시간, 종료 시간 모두 선택되어야만 좌석 정보 요청
+                if (!self.selectedDate || !self.startHour || !self.endHour) {
+                    self.allSeats = []; // 시간 미선택 시 좌석 비우기
+                    self.selectedSeat = null;
+                    return;
+                }
+
+                $.ajax({
+                    url: "http://localhost:3009/seats",
+                    dataType: "json",
+                    type: "GET",
+                    data: { 
+                        date: self.selectedDate,
+                        startHour: self.startHour,
+                        endHour: self.endHour
+                    },
+                    success: function (data) {
+                        // 배열 데이터를 객체로 변환 (서버에서 이미 객체 형태로 줄 경우 이 부분 수정 필요)
+                        self.allSeats = data.map(seat => ({
+                            seatno: seat[0],
+                            typeno: seat[1],
+                            capacity: seat[2],
+                            seatstatus: seat[3], // 서버에서 계산된 상태를 그대로 사용
+                            location: seat[4],
+                            seat_notes: seat[5]
+                        }));
+                        console.log('변환된 좌석 데이터:', self.allSeats); 
+                        self.selectedSeat = null; // 좌석 새로고침 시 선택 초기화
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching seats:', error);
+                        alert('좌석 정보를 불러오는데 실패했습니다.');
+                        self.allSeats = []; // 오류 발생 시 좌석 비우기
+                    }
+                });
+            },
+
+            // 좌석 유형 정보 불러오기
+            loadSeatTypes() {
+                let self = this;
+                $.ajax({
+                    url: "http://localhost:3009/seattypes",
+                    dataType: "json",
+                    type: "GET",
+                    success: function (data) {
+                        self.seatTypes = data.map(type => ({
+                            typeno: type[0],
+                            typename: type[1],
+                            price: type[2],
+                            description: type[3]
+                        }));
+                        console.log('변환된 좌석 유형 데이터:', self.seatTypes); 
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching seat types:', error);
+                        alert('좌석 유형 정보를 불러오는데 실패했습니다.');
+                    }
+                });
+            },
+            // Mounted에서 로그인 여부 확인
+            checkLoginStatus() {
+                this.userId = sessionStorage.getItem("sessionId") || '';
+                if (!this.userId) {
+                    alert('서비스 이용을 위해 로그인이 필요합니다.');
+                    location.href = "LIB_Login.html"; // 로그인 페이지로 이동
+                    return;
+                }
+            },
+            // 1인 1예약 체크 메소드
+            async checkActiveReservations() { // async 키워드를 붙여 비동기 처리
+                let self = this;
+                console.log('checkActiveReservations 함수 실행됨');
+                console.log('현재 userId:', self.userId);
+                try {
+                    console.log('AJAX 요청 시작, 파라미터:', { userId: self.userId });
+                    const response = await $.ajax({
+                        url: "http://localhost:3009/user/active-reservations",
+                        dataType: "json",
+                        type: "GET",
+                        data: { userId: self.userId }
+                    });
+                    
+                    console.log('서버 응답 데이터:', response);
+                    if (response.success && response.hasActiveReservation) {
+                        console.log('활성 예약 있음:', response.activeCount);
+                        // 활성 예약이 있으면 예약 UI 비활성화 및 경고 메시지 표시
+                        self.hasActiveReservation = true;
+                        if (!self.activeReservationWarningDisplayed) { // 한 번만 표시되도록
+                            self.showActiveReservationWarning();
+                            self.activeReservationWarningDisplayed = true;
+                        }
+                    } else {
+                        console.log('활성 예약 없음');
+                        // 활성 예약이 없으면 정상적으로 예약 UI 활성화
+                        self.hasActiveReservation = false;
+                        self.activeReservationWarningDisplayed = false;
+                        // 활성화 로직이 필요한 경우 (예: 이전에 비활성화된 경우) 여기에 추가
+                        this.enableReservationUI(); 
+                    }
+                } catch (err) {
+                    console.error('활성 예약 확인 오류 상세 정보:', err);
+                    console.log('에러 객체 타입:', typeof err);
+                    console.log('에러 메시지:', err.message);
+                    console.log('에러 상태:', err.status);
+                    console.error('Error checking active reservations:', err);
+                    // 오류 발생 시에도 UI는 활성화 상태로 유지 (사용자에게 불편 주지 않기 위해)
+                    self.hasActiveReservation = false;
+                    self.activeReservationWarningDisplayed = false;
+                    alert('예약 상태 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                }
+            },
+            
+            // 활성 예약 경고 메시지 표시 및 UI 비활성화
+            showActiveReservationWarning() {
+                // 경고 div가 이미 있는지 확인하여 중복 생성 방지
+                let warningDiv = document.querySelector('.active-reservation-warning');
+                if (!warningDiv) {
+                    warningDiv = document.createElement('div');
+                    warningDiv.className = 'active-reservation-warning';
+                    // 메인 컨텐츠 영역 앞에 삽입 (원하는 위치에 따라 변경 가능)
+                    const mainContent = document.querySelector('main');
+                    if (mainContent) {
+                        mainContent.insertBefore(warningDiv, mainContent.firstChild); // 메인 콘텐츠 최상단에 추가
+                    }
+                }
+                warningDiv.innerHTML = `
+                    <h3>⚠️ 이미 활성화된 예약이 있습니다</h3>
+                    <p>스터디카페는 <strong>1인 1예약 원칙</strong>을 적용하고 있습니다.</p>
+                    <p>새로운 좌석 예약이 불가합니다. 예약 내역을 확인해주세요.</p>
+                    <button class="btn-view-reservations" onclick="location.href='LIB_MyReservations.html'">내 예약 확인하기</button>
+                `;
+                
+                // 예약 관련 UI 비활성화
+                this.disableReservationUI();
+            },
+            
+            // 예약 UI 비활성화
+            disableReservationUI() {
+                // 날짜 선택 비활성화
+                const dateInput = document.querySelector('input[type="date"]');
+                if (dateInput) dateInput.disabled = true;
+                
+                // 시작 시간 선택 비활성화
+                const startTimeSelect = document.querySelector('#startTime');
+                if (startTimeSelect) startTimeSelect.disabled = true;
+                
+                // 종료 시간 선택 비활성화
+                const endTimeSelect = document.querySelector('#endTime');
+                if (endTimeSelect) endTimeSelect.disabled = true;
+
+                // 좌석 비활성화
+                document.querySelectorAll('.seat-map-container .seat').forEach(el => {
+                    el.classList.add('disabled');
+                    el.style.pointerEvents = 'none'; // 클릭 방지 추가
+                    el.onclick = null; // 클릭 이벤트 제거
+                });
+                
+                // 예약하기 버튼 비활성화
+                const reserveBtn = document.querySelector('.btn-reserve');
+                if (reserveBtn) {
+                    reserveBtn.disabled = true;
+                    reserveBtn.classList.add('disabled');
+                }
+            },
+
+            // 예약 UI 활성화 (선택 사항 - 나중에 재활성화가 필요할 경우)
+            enableReservationUI() {
+                // null 체크 추가
+                const dateInput = document.querySelector('input[type="date"]');
+                if (dateInput) dateInput.disabled = false;
+                
+                const startHourSelect = document.querySelector('select[v-model="startHour"]');
+                if (startHourSelect) startHourSelect.disabled = false;
+                
+                const endHourSelect = document.querySelector('select[v-model="endHour"]');
+                if (endHourSelect) endHourSelect.disabled = false;
+
+                // 나머지 코드도 동일하게 null 체크 추가
+                document.querySelectorAll('.seat-map-container .seat.disabled').forEach(el => {
+                    el.classList.remove('disabled');
+                });
+                
+                const reserveBtn = document.querySelector('.btn-reserve.disabled');
+                if (reserveBtn) {
+                    reserveBtn.disabled = false;
+                    reserveBtn.classList.remove('disabled');
+                }
+                
+                const warningDiv = document.querySelector('.active-reservation-warning');
+                if (warningDiv) {
+                    warningDiv.remove();
+                }
+            }
+        },
+        watch: {
+            // 날짜가 변경되면 시간 초기화 및 좌석 다시 불러오기 시도
+            selectedDate(newValue, oldValue) {
+                this.startHour = null;
+                this.endHour = null;
+                // this.loadSeats(); // 시간 선택 전이므로 바로 호출하지 않고, 시간 선택 시 호출되도록 함
+            },
+            // 시작 시간 또는 종료 시간이 변경되면 좌석 정보 다시 불러오기
+            startHour(newValue, oldValue) {
+                // 시작 시간이 변경되면 종료 시간도 초기화 (시작 시간이 달라졌으니 종료 시간도 다시 선택해야 함)
+                if (newValue) { // null이 아닌 유효한 값일 때만
+                    this.endHour = null;
+                }
+                this.loadSeats();
+            },
+            endHour(newValue, oldValue) {
+                this.loadSeats();
+            }
+        },
+        mounted() {
+            // 1. 기존 로그인 상태 확인 로직 유지
+            this.checkLoginStatus();
+
+            // 3. 현재 날짜 설정 및 좌석 타입 로드 (기존 로직 유지)
+            this.today = new Date().toISOString().split('T')[0];
+            if (!this.selectedDate) { // selectedDate가 아직 설정되지 않았다면 오늘 날짜로
+                this.selectedDate = this.today;
+            }
+            this.loadSeatTypes();
+            
+            // 4. 활성 예약 체크 로직 추가
+            this.checkActiveReservations();
+        }
+    });
+
+    app.mount('#app');
+</script>

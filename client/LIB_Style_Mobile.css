@@ -1,0 +1,186 @@
+/* 구글 웹폰트 설정 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+/* 최상위 기본 설정 */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #fdf9f3; /* 아주 연한 크림색 배경 */
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #5a4631; /* 중간 톤 브라운 계열 텍스트 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+}
+
+/* 모바일 고정 크기, 중앙 정렬 레이아웃 */
+#app {
+    width: 375px;
+    min-width: 375px;
+    max-width: 375px;
+    height: 100vh;
+    margin: 0 auto;
+    background-color: #fffef9; /* 깨끗한 흰색 느낌 크림 배경 */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 15px rgba(90, 70, 40, 0.15);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* 고정 헤더 */
+header {
+    position: sticky;
+    top: 0;
+    background-color: #8c6c4b; /* 따뜻한 브라운 */
+    color: #fff4e6; /* 크림빛 연한 텍스트 */
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.4rem;
+    box-shadow: 0 2px 6px rgba(140, 108, 75, 0.35);
+    user-select: none;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    z-index: 10;
+}
+
+/* 메인 콘텐츠 영역 - 스크롤 가능 */
+#main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 20px;
+    background-color: #fffef9; /* 배경색 유지 */
+    color: #5a4631;
+}
+
+/* 고정 푸터 */
+footer {
+    position: sticky;
+    bottom: 0;
+    background-color: #6e5235; /* 모카톤 브라운 */
+    color: #f9f5ef; /* 부드러운 크림 */
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    box-shadow: 0 -2px 6px rgba(110, 82, 53, 0.5);
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    user-select: none;
+    padding: 0 15px;
+}
+
+/* 버튼 스타일 */
+button {
+    width: 100%;
+    background-color: #b07a3a; /* 부드러운 오렌지 브라운 */
+    border: none;
+    border-radius: 14px;
+    color: #fff9f0;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 14px 0;
+    margin: 14px 0;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(176, 122, 58, 0.6);
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #a06934; /* 약간 진한 모카 색 */
+}
+
+/* 입력, 선택 폼 스타일 */
+input[type="text"], input[type="password"], select {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1.8px solid #d9caae; /* 연한 베이지-브라운 테두리 */
+    background-color: #fefcf7; /* 매우 연한 크림 배경 */
+    font-size: 1rem;
+    color: #5a4631;
+    margin-bottom: 16px;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: #b07a3a;
+    outline: none;
+    box-shadow: 0 0 8px #b07a3a80;
+}
+
+/* 링크 스타일 */
+a {
+    color: #b07a3a; /* 따뜻한 브라운-오렌지 */
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    font-size: 0.9rem;
+}
+
+a:hover {
+    color: #805a2c; /* 진한 브라운 */
+}
+
+/* 라벨 스타일 */
+label {
+    font-size: 0.95rem;
+    color: #6f5a3e;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 6px;
+}
+
+/* 체크박스 */
+input[type="checkbox"] {
+    transform: scale(1.15);
+    cursor: pointer;
+}
+
+/* 구분선 */
+.separator {
+    width: 100%;
+    border-top: 1px solid #d9caae;
+    margin: 20px 0;
+    text-align: center;
+    color: #a5886a;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* 로그인-회원가입 하단 텍스트 배치 */
+.login-links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-top: -8px;
+    color: #7a6444;
+}
+
+/* 기타 일반 텍스트 */
+p, span {
+    color: #6f5a3e;
+}
+
+/* 반응형 간단 예시 */
+@media (max-width: 400px) {
+    #app {
+        width: 100vw;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    header, footer {
+        font-size: 1.2rem;
+        padding: 0 10px;
+    }
+    button {
+        font-size: 0.95rem;
+        padding: 12px 0;
+    }
+}

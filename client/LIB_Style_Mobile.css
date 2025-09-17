@@ -2,13 +2,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
 /* 최상위 기본 설정 */
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100%;
-    background-color: #fdf9f3; /* 아주 연한 크림색 배경 */
+    background-color: #fdf9f3;
+    /* 아주 연한 크림색 배경 */
     font-family: 'Noto Sans KR', sans-serif;
-    color: #5a4631; /* 중간 톤 브라운 계열 텍스트 */
+    color: #5a4631;
+    /* 중간 톤 브라운 계열 텍스트 */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow: hidden;
@@ -21,7 +24,8 @@ html, body {
     max-width: 375px;
     height: 100vh;
     margin: 0 auto;
-    background-color: #fffef9; /* 깨끗한 흰색 느낌 크림 배경 */
+    background-color: #fffef9;
+    /* 깨끗한 흰색 느낌 크림 배경 */
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 15px rgba(90, 70, 40, 0.15);
@@ -31,90 +35,113 @@ html, body {
 
 /* 고정 헤더 */
 /* 헤더 자체 스타일 */
-    .header {
-      background-color: #8c6c4b;
-      color: #fff4e6;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between; /* 중앙 정렬에서 양쪽 정렬로 변경 */
-      font-weight: 700;
-      font-size: 1.5rem;
-      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.25);
-      user-select: none;
-      padding: 0 15px; /* 좌우 여백 추가 */
-    }
-    
-    .header .logo {
-      font-family: 'Noto Sans KR', sans-serif;
-      letter-spacing: 2px;
-      flex-grow: 1; /* 로고가 중앙에 오도록 공간 확보 */
-      text-align: center; /* 로고 텍스트 중앙 정렬 */
-    }
-    
-    /* 버튼 스타일 */
-    .btn-action-text { /* 아이콘 대신 텍스트를 위한 새로운 클래스명 */
-      background: none;
-      border: none;
-      color: #fff4e6;
-      font-size: 1.3rem; /* 뒤로가기('<') 문자 크기 */
-      cursor: pointer;
-      width: 40px; /* 버튼의 터치/클릭 영역 */
-      height: 40px; /* 버튼의 터치/클릭 영역 */
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.3s;
-      /* 메인 텍스트 버튼의 경우 폰트 크기 및 패딩 조정 */
-      line-height: 1; /* 텍스트 수직 정렬 */
-      padding-top: 15px; /* 필요시 텍스트 수직 위치 미세 조정 */
-      box-shadow: none;
-    }
-    .material-symbols-outlined {
-        color: #fff4e6;
-    }
+.header {
+    background-color: #8c6c4b;
+    color: white;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* 중앙 정렬에서 양쪽 정렬로 변경 */
+    font-weight: 700;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.25);
+    user-select: none;
+    padding: 0 15px;
+    /* 좌우 여백 추가 */
+}
 
-    /* 메인 텍스트 버튼에만 별도 폰트 사이즈 적용 */
-    .btn-action-text.btn-home-text {
-        font-size: 1rem; /* '메인' 텍스트 크기 */
-        font-weight: 700;
-        letter-spacing: -0.5px;
-    }
-    
-    .btn-action-text:hover {
-      background-color: rgba(255, 255, 255, 0.15);
-    }
-    
-    /* 좌우 영역 스타일 */
-    .header-left, .header-right {
-      width: 40px; /* 버튼이 들어갈 공간 확보 */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+.header .logo {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Courier, monospace;
+    letter-spacing: 2px;
+    flex-grow: 1;
+    /* 로고가 중앙에 오도록 공간 확보 */
+    text-align: center;
+    /* 로고 텍스트 중앙 정렬 */
+}
+
+/* 버튼 스타일 */
+.btn-action-text {
+    /* 아이콘 대신 텍스트를 위한 새로운 클래스명 */
+    background: none;
+    border: none;
+    color: #fff4e6;
+    font-size: 1.3rem;
+    /* 뒤로가기('<') 문자 크기 */
+    cursor: pointer;
+    width: 40px;
+    /* 버튼의 터치/클릭 영역 */
+    height: 40px;
+    /* 버튼의 터치/클릭 영역 */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+    /* 메인 텍스트 버튼의 경우 폰트 크기 및 패딩 조정 */
+    line-height: 1;
+    /* 텍스트 수직 정렬 */
+    padding-top: 15px;
+    /* 필요시 텍스트 수직 위치 미세 조정 */
+    box-shadow: none;
+}
+
+.material-symbols-outlined {
+    color: #fff4e6;
+}
+
+/* 메인 텍스트 버튼에만 별도 폰트 사이즈 적용 */
+.btn-action-text.btn-home-text {
+    font-size: 1rem;
+    /* '메인' 텍스트 크기 */
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.btn-action-text:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* 좌우 영역 스타일 */
+.header-left,
+.header-right {
+    width: 40px;
+    /* 버튼이 들어갈 공간 확보 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 /* 메인 콘텐츠 영역 - 스크롤 가능 */
 #main-content {
     flex: 1;
     padding: 24px 20px;
-    background-color: #fffef9; /* 배경색 유지 */
+    background-image: url("../media/lib10.jpg");
+    background-position: center;
+    background-color: #fffef9;
+    /* 배경색 유지 */
     color: #5a4631;
-    overflow-y: scroll;  /* 스크롤 가능 */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE 10+ */
+    overflow-y: scroll;
+    /* 스크롤 가능 */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE 10+ */
 }
+
 /* Chrome, Safari, Opera */
 #main-content::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 /* 고정 푸터 */
 footer {
     position: sticky;
     bottom: 0;
-    background-color: #6e5235; /* 모카톤 브라운 */
-    color: #f9f5ef; /* 부드러운 크림 */
+    background-color: #8c6c4b;
+    /* 모카톤 브라운 */
+    color: #fff4e6;
+    /* 부드러운 크림 */
     height: 50px;
     display: flex;
     align-items: center;
@@ -130,7 +157,8 @@ footer {
 /* 버튼 스타일 */
 button {
     width: 100%;
-    background-color: #b07a3a; /* 부드러운 오렌지 브라운 */
+    background-color: #b07a3a;
+    /* 부드러운 오렌지 브라운 */
     border: none;
     border-radius: 14px;
     color: #fff9f0;
@@ -144,23 +172,29 @@ button {
 }
 
 button:hover {
-    background-color: #a06934; /* 약간 진한 모카 색 */
+    background-color: #a06934;
+    /* 약간 진한 모카 색 */
 }
 
 /* 입력, 선택 폼 스타일 */
-input[type="text"], input[type="password"], select {
+input[type="text"],
+input[type="password"],
+select {
     width: 100%;
     padding: 12px 15px;
     border-radius: 10px;
-    border: 1.8px solid #d9caae; /* 연한 베이지-브라운 테두리 */
-    background-color: #fefcf7; /* 매우 연한 크림 배경 */
+    border: 1.8px solid #d9caae;
+    /* 연한 베이지-브라운 테두리 */
+    background-color: #fefcf7;
+    /* 매우 연한 크림 배경 */
     font-size: 1rem;
     color: #5a4631;
     margin-bottom: 16px;
     transition: border-color 0.3s ease;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     border-color: #b07a3a;
     outline: none;
     box-shadow: 0 0 8px #b07a3a80;
@@ -168,7 +202,8 @@ input:focus, select:focus {
 
 /* 링크 스타일 */
 a {
-    color: #b07a3a; /* 따뜻한 브라운-오렌지 */
+    color: #b07a3a;
+    /* 따뜻한 브라운-오렌지 */
     text-decoration: underline;
     cursor: pointer;
     transition: color 0.2s ease;
@@ -176,7 +211,8 @@ a {
 }
 
 a:hover {
-    color: #805a2c; /* 진한 브라운 */
+    color: #805a2c;
+    /* 진한 브라운 */
 }
 
 /* 라벨 스타일 */
@@ -216,7 +252,8 @@ input[type="checkbox"] {
 }
 
 /* 기타 일반 텍스트 */
-p, span {
+p,
+span {
     color: #6f5a3e;
 }
 
@@ -227,10 +264,13 @@ p, span {
         border-radius: 0;
         box-shadow: none;
     }
-    header, footer {
+
+    header,
+    footer {
         font-size: 1.2rem;
         padding: 0 10px;
     }
+
     button {
         font-size: 0.95rem;
         padding: 12px 0;

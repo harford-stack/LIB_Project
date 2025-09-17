@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>스터디카페 좌석 예약</title>
+    <title>PageStudy - 좌석 예약</title>
     <link rel="stylesheet" href="LIB_Style_Mobile.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -618,21 +618,20 @@
                 let hours = [];
                 
                 if (isToday) {
-                // 현재 시간에서 1시간 후부터 예약 가능하도록 설정
-                const currentHour = now.getHours();
-                const minStartHour = Math.max(startHour, currentHour + 1);
-                
-                // 현재 시간 이후부터 영업 종료 시간까지만 표시
-                for (let h = minStartHour; h < endHour; h++) {
-                    hours.push(h);
-                }
+                    // 현재 시간에서 1시간 후부터 예약 가능하도록 설정
+                    const currentHour = now.getHours();
+                    const minStartHour = Math.max(startHour, currentHour + 1);
+                    
+                    // 현재 시간 이후부터 영업 종료 시간까지만 표시
+                    for (let h = minStartHour; h < endHour; h++) {
+                        hours.push(h);
+                    }
                 } else {
-                // 오늘이 아닌 날짜는 전체 영업 시간 표시
-                for (let h = startHour; h < endHour; h++) {
-                    hours.push(h);
+                    // 오늘이 아닌 날짜는 전체 영업 시간 표시
+                    for (let h = startHour; h < endHour; h++) {
+                        hours.push(h);
+                    }
                 }
-                }
-                
                 return hours;
             }
         },
@@ -968,7 +967,6 @@
             selectedDate(newValue, oldValue) {
                 this.startHour = null;
                 this.endHour = null;
-                // this.loadSeats(); // 시간 선택 전이므로 바로 호출하지 않고, 시간 선택 시 호출되도록 함
             },
             // 시작 시간 또는 종료 시간이 변경되면 좌석 정보 다시 불러오기
             startHour(newValue, oldValue) {

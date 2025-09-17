@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageStudy - 오시는 길</title>
+    <link rel="stylesheet" href="LIB_Style_Mobile.css"> <!-- 공통 스타일시트 연결 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        // 헤더와 푸터를 동적으로 불러오는 함수
+        function loadHeaderFooter() {
+            // 헤더 로드
+            fetch('LIB_Header.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
+                    const headerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('header');
+                    document.getElementById('header-container').appendChild(headerContent);
+                });
+            
+            // 푸터 로드
+            fetch('LIB_Footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
+                    const footerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('footer');
+                    document.getElementById('footer-container').appendChild(footerContent);
+                });
+        }
+    </script>
+    <style>
+        .location-content-container {
+            max-width: 800px;
+            margin: 0 auto; /* 상단 여백은 main-content가 처리 */
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            line-height: 1.8;
+
+        }
+
+        /* 페이지 헤더 (LIB_UseInfo.html의 .info-page-header와 동일) */
+        .info-page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0d8c2;
+        }
+
+        .info-page-header .page-description {
+            font-size: 1.1rem;
+            color: #5a4631;
+            line-height: 1.6;
+        }
+
+        /* 각 섹션 (LIB_UseInfo.html의 .info-section과 동일) */
+        .info-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #fcfaf6; /* 섹션별 배경색 */
+            border-radius: 10px;
+            border: 1px solid #e6d9c4;
+        }
+
+        .info-section h2 {
+            font-size: 1.6rem;
+            color: #6a4f32; /* 제목 색상 */
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #a06934; /* 강조 선 */
+            padding-bottom: 8px;
+            display: inline-block; /* 너비 조절 */
+            font-weight: 700;
+        }
+
+        /* 지도 래퍼 (map-section에 포함) */
+        #map-wrapper {
+            width: 100%;
+            height: 350px; /* 지도의 높이 설정 (원하는 크기로 조정) */
+            border-radius: 8px; /* 컨테이너와 유사한 둥근 모서리 */
+            overflow: hidden; /* iframe 모서리가 삐져나오지 않도록 */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* 그림자 */
+            margin-top: 15px;
+            border: 1px solid #d1c0ae; /* 테두리 */
+        }
+
+        #map-wrapper iframe {
+            border: none; /* iframe 자체의 기본 테두리 제거 */
+        }
+
+        .address-section p {
+            font-size: 1rem;
+            color: #4a4a4a;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body onload="loadHeaderFooter()">
+    <main id="app">
+        <div id="header-container"></div> <!-- 공통 헤더가 로드될 영역 -->
+
+        <div id="main-content">
+            
+            <div class="location-content-container">
+                <header class="info-page-header">
+                    <h1>오시는 길</h1> 
+                    <p class="page-description">찾아오시는 데 불편함이 없도록<br>상세히 확인해 주세요.</p>
+                </header>
+
+                <section class="info-section map-section">
+                    <h2>스터디카페 위치</h2>
+                    <!-- Google Maps iframe (실제 위치 정보로 변경 필요!) -->
+                    <div id="map-wrapper">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3165.7187281207275!2d126.71844899654388!3d37.49096335531803!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357b7c4657c1fbbb%3A0x755f5b8f6bf0cc27!2z7J247LKc6rSR7Jet7IucIOu2gO2Pieq1rCDqsr3sm5DrjIDroZwgMTM2Ng!5e0!3m2!1sko!2skr!4v1758121339751!5m2!1sko!2skr"
+                                width="100%"
+                                height="100%"
+                                style="border:0;"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </section>
+
+                <section class="info-section address-section">
+                    <h2>주소 및 연락처</h2>
+                    <p><strong>주소 :</strong> 인천시 부평구 경원대로 1366, (부평동, 스테이션타워 7F)</p>
+                    <p><strong>전화 :</strong> 1577-3030</p>
+                    <p><strong>영업 시간 :</strong> 아침 9시 ~ 밤 10시 (22시)</p>
+                </section>
+            </div>
+        </div>
+
+        <div id="footer-container"></div> <!-- 공통 푸터가 로드될 영역 -->
+    </main>
+</body>
+</html>

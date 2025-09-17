@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이용 안내 및 이용 요금 - 가을날의 서재</title>
+    <link rel="stylesheet" href="LIB_Style_Mobile.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        // 헤더와 푸터를 동적으로 불러오는 함수
+        function loadHeaderFooter() {
+            // 헤더 로드
+            fetch('LIB_Header.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
+                    const headerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('header');
+                    document.getElementById('header-container').appendChild(headerContent);
+                });
+            
+            // 푸터 로드
+            fetch('LIB_Footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
+                    const footerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('footer');
+                    document.getElementById('footer-container').appendChild(footerContent);
+                });
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #312f29; /* 전체적인 글자색 */
+            background-color: #f7f4ec; /* 부드러운 배경색 */
+            margin: 0;
+        }
+        .use-info-container h2 {
+            text-align: center;
+        }
+
+        /* 메인 콘텐츠 영역 */
+        .use-info-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            line-height: 1.8;
+        }
+
+        /* 페이지 헤더 */
+        .info-page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0d8c2;
+        }
+
+        .info-page-header .page-description {
+            font-size: 1.1rem;
+            color: #5a4631;
+            line-height: 1.6;
+        }
+
+        /* 각 섹션 */
+        .info-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #fcfaf6; /* 섹션별 배경색 */
+            border-radius: 10px;
+            border: 1px solid #e6d9c4;
+        }
+
+        .info-section h2 {
+            font-size: 1.6rem;
+            color: #6a4f32; /* 제목 색상 */
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #a06934; /* 강조 선 */
+            padding-bottom: 8px;
+            display: inline-block; /* 너비 조절 */
+            font-weight: 700;
+        }
+
+        /* 일반 텍스트 단락 */
+        .info-section p {
+            font-size: 1rem;
+            color: #4a4a4a;
+        }
+
+        /* 이용 요금 테이블 */
+        .pricing-info table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+
+        .pricing-info th, .pricing-info td {
+            border: 1px solid #e0d8c2;
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        .pricing-info th {
+            background-color: #a06934; /* 헤더 배경색 */
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .pricing-info tbody tr:nth-child(even) {
+            background-color: #f7f4ec; /* 짝수 행 배경색 */
+        }
+
+        .pricing-info tbody tr:hover {
+            background-color: #e6e0d4; /* 호버 효과 */
+        }
+
+        /* 부대시설 목록 */
+        .amenities-list, .guideline-list {
+            list-style: none; /* 기본 리스트 마커 제거 */
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .amenities-list li, .guideline-list li {
+            font-size: 1rem;
+            color: #4a4a4a;
+            margin-bottom: 10px;
+            padding-left: 25px; /* 아이콘/마커를 위한 여백 */
+            position: relative;
+        }
+
+        .amenities-list li:before {
+            content: '✔️'; /* 체크 마커 */
+            position: absolute;
+            left: 0;
+            color: #725a38; /* 마커 색상 */
+        }
+
+        /* 부대시설 아이콘 추가 스타일 */
+        .amenity-icon {
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+        .guideline-list li:before {
+            content: '💡'; /* 전구 마커 */
+            position: absolute;
+            left: 0;
+            color: #d1b48b; /* 마커 색상 */
+        }
+
+        /* 모바일 반응형 */
+        @media (max-width: 480px) {
+            .info-page-header .page-description {
+                font-size: 1rem;
+            }
+            .info-section h2 {
+                font-size: 1.2rem;
+            }
+            .amenities-list li, .guideline-list li {
+                padding-left: 20px;
+            }
+        }
+    </style>
+</head>
+<body onload="loadHeaderFooter()">
+    <main id="app">
+        <div id="header-container"></div> <!-- 공통 헤더가 로드될 영역 -->
+
+        <div id="main-content">
+            
+            <div class="use-info-container">
+                <h2>이용 안내 및 이용 요금</h2>
+                <header class="info-page-header">
+                    <p class="page-description">저희 가을날의 서재를<br>이용해주셔서 감사합니다.</p>
+                    <p>쾌적한 공간에서 편안하게<br>공부하실 수 있도록 안내드립니다.</p>
+                </header>
+
+                <!-- 이용 시간 안내 -->
+                <section class="info-section usage-hours">
+                    <h2>이용 시간</h2>
+                    <p>이용 가능 시간은</p>
+                    <p><strong>아침 9시 ~ 밤 10시 (22시)</strong> 입니다.</p>
+                </section>
+
+                <!-- 이용 요금 안내 -->
+                <section class="info-section pricing-info">
+                    <h2>이용 요금</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>좌석 종류</th>
+                                <th>시간당 요금</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1인 자유석</td>
+                                <td>2,000원</td>
+                            </tr>
+                            <tr>
+                                <td>1인 개인실</td>
+                                <td>3,000원</td>
+                            </tr>
+                            <tr>
+                                <td>4인 그룹실</td>
+                                <td>6,000원</td>
+                            </tr>
+                            <tr>
+                                <td>6인 그룹실</td>
+                                <td>9,000원</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- 부대시설 안내 -->
+                <section class="info-section amenities">
+                    <h2>부대시설</h2>
+                    <ul class="amenities-list">
+                        <li><span class="amenity-icon">🖨️</span> O.A 실 (복사/스캔 - 유료)</li>
+                        <li><span class="amenity-icon">🛋️</span> 휴게실 안마의자</li>
+                        <li><span class="amenity-icon">☕</span> 휴게실 원두커피, 차</li>
+                        <li><span class="amenity-icon">📚</span> 자세 교정 의자, 무음 마우스, 담요, 사무용품 등 무료 대여</li>
+                    </ul>
+                </section>
+
+                <!-- 이용 시 유의 사항 -->
+                <section class="info-section guidelines">
+                    <h2>이용 시 유의 사항</h2>
+                    <ul class="guideline-list">
+                        <li>WIFI 비밀번호 : 휴게실 안내문을 참고해주세요.</li>
+                        <li>휴대폰은 무음으로 설정해주세요.</li>
+                        <li>노트북 이용 고객은 자유실 또는 노트북존을 이용해주세요.</li>
+                        <li>프린터기와 각종 대여물품은 휴게실에 준비되어 있습니다.</li>
+                        <li>모든 좌석에서 음료 섭취가 가능합니다. 냄새가 날 수 있는 음식은 휴게실을 이용해주세요.</li>
+                        <li>이용 시간이 종료되면 다음 사람을 위해 좌석을 정리해주세요.</li>
+                        <li>개인 소지품 분실에 주의하시기 바랍니다. 분실 시 책임지지 않습니다. (CCTV 작동 중)</li>
+                        <li>기물 파손 시 보상 규정에 의거하여 비용을 청구할 수 있습니다.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+
+        <div id="footer-container"></div>
+    </main>
+</body>
+</html>

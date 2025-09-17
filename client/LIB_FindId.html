@@ -4,34 +4,204 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>아이디 찾기</title>
+    <link rel="stylesheet" href="LIB_Style_Mobile.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        // 헤더와 푸터를 동적으로 불러오는 함수
+        function loadHeaderFooter() {
+            // 헤더 로드
+            fetch('LIB_Header.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
+                    const headerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('header');
+                    document.getElementById('header-container').appendChild(headerContent);
+                });
+            
+            // 푸터 로드
+            fetch('LIB_Footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
+                    const footerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('footer');
+                    document.getElementById('footer-container').appendChild(footerContent);
+                });
+        }
+    </script>
+    <style>
+        /* 아이디 찾기 페이지 전체 컨테이너 */
+        .find-container { /* #app 대신 find-container로 변경하여 컨테이너 스타일 적용 */
+            max-width: 360px;
+            margin: 30px auto; /* #main-content 내부에서의 상하 마진 및 좌우 자동 중앙 정렬 */
+            padding: 30px 25px 40px;
+            background: #fefcf7; /* 깨끗한 크림색 배경 */
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(176, 122, 58, 0.2);
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #5a4631;
+        }
+
+        /* 제목 스타일 */
+        .find-container h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #8c6c4b;
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        /* 안내 문구 */
+        .find-container p:first-of-type { /* 클래스로 감싸진 p 태그에 스타일 적용 */
+            text-align: center;
+            color: #6f5a3e;
+            margin-bottom: 30px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* 입력 필드 그룹 간 간격 */
+        .find-container .form-group {
+            margin-bottom: 20px; /* 각 이름/이메일 입력 그룹 간격 */
+        }
+
+        /* 라벨 스타일 */
+        .find-container label { /* label 태그에 직접 적용 */
+            display: block;
+            font-weight: 600;
+            color: #6f5a3e;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        /* 인풋 필드 스타일 */
+        .find-container input[type="text"] {
+            width: 90%;
+            padding: 12px 14px;
+            font-size: 1rem;
+            border: 1.8px solid #d9caae;
+            border-radius: 12px;
+            background-color: #fefcf7;
+            color: #5a4631;
+            margin-top: 5px; /* 라벨과 인풋 사이 간격 */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .find-container input[type="text"]:focus {
+            border-color: #b07a3a;
+            outline: none;
+            box-shadow: 0 0 10px rgba(176, 122, 58, 0.4);
+        }
+
+        /* 아이디 찾기 버튼 */
+        .find-container button { /* 버튼에 직접 적용 */
+            width: 100%;
+            background-color: #a06934;
+            color: #fff9f0;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 0;
+            font-weight: 700;
+            font-size: 1.15rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(160, 105, 52, 0.6);
+            transition: background-color 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .find-container button:hover {
+            background-color: #8a5a2e;
+        }
+
+        /* 찾은 아이디 결과 영역 */
+        .find-container .find-result-area p { /* 클래스로 감싸진 결과 영역의 p 태그 */
+            text-align: center;
+            font-size: 1.1rem;
+            color: #6f5a3e;
+            padding: 15px;
+            background-color: #f8f4ec;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .find-container .find-result-area p strong {
+            color: #a06934;
+            font-weight: 700;
+        }
+
+        /* 로그인 페이지 링크 */
+        .find-container .login-link-area { /* 클래스로 감싸진 링크 영역 */
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .find-container .login-link-area a {
+            color: #b07a3a;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .find-container .login-link-area a:hover {
+            color: #8c6c4b;
+            text-decoration: underline;
+        }
+
+        /* 반응형 (find-container에 맞춰 수정) */
+        @media (max-width: 400px) {
+            .find-container { /* #app 대신 find-container */
+                margin: 20px 15px;
+                padding: 25px 20px 30px;
+                box-shadow: none;
+            }
+            .find-container h2 {
+                font-size: 2rem;
+            }
+            .find-container button {
+                font-size: 1rem;
+                padding: 12px 0;
+            }
+        }
+    </style>
 </head>
-<body>
-    <div id="app">
-        <h2>아이디 찾기</h2>
-        <p>회원가입 시 입력한 이름과 이메일을 입력하시면 아이디를 찾을 수 있습니다.</p>
-        
-        <div>
-            <label>
-                이름 : <input type="text" v-model="userName" placeholder="이름 입력">
-            </label>
+<body onload="loadHeaderFooter()">
+    <main id="app">
+        <div id="header-container"></div>
+        <div id="main-content">
+            <div class="find-container">
+                <h2>아이디 찾기</h2>
+                <p>회원가입 시 입력한 이름과 이메일을 입력하시면 아이디를 찾을 수 있습니다.</p>
+                
+                <div>
+                    <label for="userName_input">이름</label>
+                    <input type="text" id="userName_input" v-model="userName" placeholder="이름 입력">
+                </div>
+
+                <div>
+                    <label for="userEmail_input">이메일</label>
+                    <input type="text" id="userEmail_input" v-model="userEmail" placeholder="이메일 입력">
+                </div>
+
+                <button type="button" @click="fnFindId">아이디 찾기</button>
+
+                <div class="find-result-area" v-if="foundId">
+                    <p>회원님의 아이디는 <strong>{{ maskedId }}</strong> 입니다.</p>
+                </div>
+
+                <div class="login-link-area">
+                    <a href="LIB_Login.html">로그인 페이지로 돌아가기</a>
+                </div>
+            </div>
         </div>
-        <div>
-            <label>
-                이메일 : <input type="text" v-model="userEmail" placeholder="이메일 입력">
-            </label>
-        </div>
-        <div>
-            <button @click="fnFindId">아이디 찾기</button>
-        </div>
-        <div v-if="foundId">
-            <p>회원님의 아이디는 <strong>{{ maskedId }}</strong> 입니다.</p>
-        </div>
-        <div>
-            <a href="LIB_Login.html">로그인 페이지로 돌아가기</a>
-        </div>
-    </div>
+        <div id="footer-container"></div>
+    </main>
 </body>
 </html>
 

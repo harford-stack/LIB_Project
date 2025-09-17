@@ -4,238 +4,381 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>내 예약 내역</title>
+    <link rel="stylesheet" href="LIB_Style_Mobile.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // 헤더와 푸터를 동적으로 불러오는 함수
+        function loadHeaderFooter() {
+            // 헤더 로드
+            fetch('LIB_Header.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
+                    const headerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('header');
+                    document.getElementById('header-container').appendChild(headerContent);
+                });
+            
+            // 푸터 로드
+            fetch('LIB_Footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
+                    const footerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('footer');
+                    document.getElementById('footer-container').appendChild(footerContent);
+                });
+        }
+    </script>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
+        /* 예약 내역 페이지 컨테이너 */
+        .my-reservations-container {
+            max-width: 800px;
+            margin: 20px auto 40px;
+            padding: 30px 25px;
+            background: #fefcf7;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(176, 122, 58, 0.2);
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #5a4631;
+        }
+
+        /* 헤더 스타일 */
+        .my-reservations-container h2 {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .my-reservations-container h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #8c6c4b;
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        header {
-            background-color: #4CAF50;
-            color: white;
+            letter-spacing: -0.5px;
             text-align: center;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            border-radius: 5px;
         }
-        main {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+        .btn-back-to-main {
+            background-color: #8c7b64;
+            color: #fff9f0;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(140, 123, 100, 0.4);
+            transition: background-color 0.3s ease;
         }
-        h1, h2 {
-            color: #333;
+
+        .btn-back-to-main:hover {
+            background-color: #7a6a54;
+        }
+
+        /* 사용자 인사말 */
+        .user-greeting {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #a06934;
+            margin-bottom: 25px;
             text-align: center;
-            margin-bottom: 1.5rem;
         }
+
+        /* 필터 버튼 영역 */
         .filter-buttons {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        .filter-buttons button {
-            background-color: #ddd;
-            color: #333;
-            border: none;
-            padding: 10px 15px;
-            margin: 0 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .filter-buttons button.active {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .filter-buttons button:hover:not(.active) {
-            background-color: #ccc;
-        }
-        .reservation-list {
-            list-style: none;
-            padding: 0;
-        }
-        .reservation-item {
-            background-color: #f9f9f9;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            padding: 15px 20px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap; /* 반응형을 위해 추가 */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 25px;
         }
-        .reservation-details {
-            flex-grow: 1;
-            text-align: left;
-            padding-right: 15px; /* 버튼과의 간격 */
-        }
-        .reservation-details p {
-            margin: 5px 0;
-            color: #555;
-        }
-        .reservation-details strong {
-            color: #333;
-        }
-        .reservation-details .status {
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 3px;
-            color: white;
-            display: inline-block;
-            margin-left: 10px;
-        }
-        .status.confirmed { background-color: #4CAF50; }
-        .status.canceled { background-color: #f44336; }
-        .status.past { background-color: #9E9E9E; } /* 지나간 예약 */
-        .status.upcoming { background-color: #2196F3; } /* 다가올 예약 */
 
-
-        .reservation-actions button {
-            background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
+        .filter-buttons button {
+            background-color: #f0e9e0;
+            color: #6f5a3e;
+            border: 1.5px solid #d9caae;
+            border-radius: 30px;
+            padding: 8px 16px;
+            font-weight: 600;
+            font-size: 0.95rem;
             cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-            margin-left: 10px;
+            transition: all 0.3s ease;
         }
-        .reservation-actions button:hover {
-            background-color: #d32f2f;
+
+        .filter-buttons button.active {
+            background-color: #a06934;
+            color: #fff9f0;
+            border-color: #a06934;
         }
-        .reservation-actions button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
+
+        .filter-buttons button:hover:not(.active) {
+            background-color: #e6d9c4;
         }
-        .empty-message {
+
+        /* 로딩 및 메시지 */
+        .loading-message, .empty-message {
             text-align: center;
-            color: #666;
-            padding: 30px;
-            border: 1px dashed #ddd;
-            border-radius: 5px;
-            margin-top: 20px;
+            padding: 30px 20px;
+            font-size: 1.1rem;
+            color: #8c7b64;
+            background-color: #f8f4ec;
+            border-radius: 12px;
+            margin: 20px 0;
         }
-        .loading-message {
+        .info-message, .error-message {
+            padding: 15px;
+            border-radius: 10px;
             text-align: center;
-            padding: 20px;
-            color: #007bff;
+            margin: 20px 0;
+            font-weight: 600;
         }
+
         .info-message {
-            background-color: #e7f3fe;
-            color: #004085;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            border: 1px solid #cce5ff;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
+
         .error-message {
             background-color: #f8d7da;
             color: #721c24;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
             border: 1px solid #f5c6cb;
         }
+
+        /* 예약 목록 */
+        .reservation-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 예약 항목 */
+        .reservation-item {
+            background-color: #fff;
+            border: 1px solid #e6d9c4;
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(176, 122, 58, 0.08);
+        }
+
+        .reservation-details {
+            flex: 1 1 65%;
+            min-width: 280px;
+        }
+
+        .reservation-details p {
+            margin: 8px 0;
+            font-size: 1rem;
+            color: #5a4631;
+            line-height: 1.5;
+        }
+
+        .reservation-time {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .status {
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        /* 예약 상태별 색상 */
+        .status-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-upcoming {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-past {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-canceled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* 예약 액션 버튼 영역 */
+        .reservation-actions {
+            flex: 1 1 30%;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .reservation-actions button {
+            width: 100%;
+            max-width: 180px;
+            padding: 12px 0;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-cancel {
+            background-color: #dc3545;
+            color: #fff9f0;
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.4);
+        }
+
+        .btn-cancel:hover {
+            background-color: #c82333;
+        }
+
+        .btn-modify {
+            background-color: #a06934;
+            color: #fff9f0;
+            box-shadow: 0 4px 10px rgba(160, 105, 52, 0.4);
+        }
+
+        .btn-modify:hover {
+            background-color: #8a5a2e;
+        }
+
+        .btn-modify:disabled {
+            background-color: #d9caae;
+            color: #8c7b64;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
         /* 반응형 디자인 */
         @media (max-width: 768px) {
+            .my-reservations-container {
+                padding: 25px 20px;
+            }
+            
+            .filter-buttons {
+                gap: 8px;
+            }
+            
+            .filter-buttons button {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+            
             .reservation-item {
-                flex-direction: column;
-                align-items: flex-start;
+                padding: 15px;
             }
-            .reservation-details {
-                padding-right: 0;
-                margin-bottom: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .my-reservations-container header h1 {
+                font-size: 1.8rem;
             }
+            
+            .user-greeting {
+                font-size: 1.4rem;
+            }
+            
+            .filter-buttons {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+            
+            .reservation-details, 
+            .reservation-actions {
+                flex: 1 1 100%;
+            }
+            
+            .reservation-actions {
+                margin-top: 15px;
+                align-items: center;
+            }
+            
             .reservation-actions button {
-                margin-left: 0;
-                width: 100%;
-                margin-top: 5px;
+                max-width: 100%;
             }
-        }
-        .btn-back-to-main {
-            background-color: #6c757d; /* 회색 계열로 메인 버튼과 구분 */
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 15px;
-            transition: background-color 0.3s;
-        }
-        .btn-back-to-main:hover {
-            background-color: #5a6268;
         }
     </style>
 </head>
-<body>
-    <div id="app">
-        <header>
-            <h1>내 예약 내역</h1>
-        </header>
+<body onload="loadHeaderFooter()">
+    <main id="app">
+        <div id="header-container"></div>
 
-        <main>
-            <div style="text-align: right; margin-bottom: 20px;">
-                <button class="btn-back-to-main" @click="goToMainPage">메인으로 돌아가기</button>
-            </div>
-            <h2>{{ userName }}님의 예약 정보</h2>
+        <div id="main-content">
+            <div class="my-reservations-container">
+                <h2>내 예약 내역</h2>
 
-            <div class="filter-buttons">
-                <button :class="{ active: filterType === 'all' }" @click="filterType = 'all'">모든 예약</button>
-                <button :class="{ active: filterType === 'upcoming' }" @click="filterType = 'upcoming'">다가올 예약</button>
-                <button :class="{ active: filterType === 'past' }" @click="filterType = 'past'">지난 예약</button>
-                <button :class="{ active: filterType === 'canceled' }" @click="filterType = 'canceled'">취소된 예약</button>
-            </div>
+                <div>
+                    <h2 class="user-greeting">{{ userName }}님의 예약 정보</h2>
 
-            <div v-if="isLoading" class="loading-message">
-                예약 내역을 불러오는 중입니다...
-            </div>
-
-            <div v-if="message" :class="isSuccess ? 'info-message' : 'error-message'">
-                {{ message }}
-            </div>
-
-            <ul class="reservation-list" v-if="!isLoading && filteredReservations.length > 0">
-                <li v-for="reservation in filteredReservations" :key="reservation.resvno" class="reservation-item">
-                    <div class="reservation-details">
-                        <p><strong>예약 번호:</strong> {{ reservation.resvno }}</p>
-                        <p><strong>예약 시점:</strong> {{ formatDateTime(reservation.resvtime) }}</p>
-                        <p><strong>좌석:</strong> {{ reservation.location }} ({{ reservation.seat_notes }})</p>
-                        <p>
-                            <strong>날짜:</strong> {{ formatDate(reservation.resvdate) }}
-                            <strong style="margin-left: 10px;">시간:</strong> {{ reservation.start_hour }}시 ~ {{ reservation.end_hour }}시
-                        </p>
-                        <p><strong>총 금액:</strong> {{ reservation.totalprice }}원</p>
-                        <p><strong>상태:</strong>
-                            <span :class="['status', getReservationStatusClass(reservation)]">
-                                {{ getReservationStatusText(reservation) }}
-                            </span>
-                        </p>
+                    <div class="filter-buttons">
+                        <button :class="{ active: filterType === 'all' }" @click="filterType = 'all'">모든 예약</button>
+                        <button :class="{ active: filterType === 'upcoming' }" @click="filterType = 'upcoming'">다가올 예약</button>
+                        <button :class="{ active: filterType === 'past' }" @click="filterType = 'past'">지난 예약</button>
+                        <button :class="{ active: filterType === 'canceled' }" @click="filterType = 'canceled'">취소된 예약</button>
                     </div>
-                    <div class="reservation-actions">
-                        <!-- '다가올 예약'이면서 '확정(CONFIRMED)' 상태일 때만 취소 버튼 활성화 -->
-                        <button v-if="isCancellable(reservation)" @click="cancelReservation(reservation.resvno)">
-                            예약 취소
-                        </button>
-                        <!-- 예약 변경은 복잡하므로 현재는 비활성 (placeholder) -->
-                        <button disabled title="예약 변경은 준비 중입니다.">예약 변경</button>
-                    </div>
-                </li>
-            </ul>
 
-            <div v-if="!isLoading && filteredReservations.length === 0" class="empty-message">
-                해당 조건의 예약 내역이 없습니다.
+                    <div v-if="isLoading" class="loading-message">
+                        예약 내역을 불러오는 중입니다...
+                    </div>
+
+                    <div v-if="message" :class="isSuccess ? 'info-message' : 'error-message'">
+                        {{ message }}
+                    </div>
+
+                    <ul class="reservation-list" v-if="!isLoading && filteredReservations.length > 0">
+                        <li v-for="reservation in filteredReservations" :key="reservation.resvno" class="reservation-item">
+                            <div class="reservation-details">
+                                <p><strong>예약 번호 :</strong> {{ reservation.resvno }}</p>
+                                <!-- <p><strong>예약 시점 :</strong> {{ formatDateTime(reservation.resvtime) }}</p> -->
+                                <p><strong>좌석 :</strong> {{ reservation.location }} ({{ reservation.seat_notes }})</p>
+                                <p><strong>날짜 :</strong> {{ formatDate(reservation.resvdate) }}</p>
+                                <p><strong>시간:</strong> {{ reservation.start_hour }}시 ~ {{ reservation.end_hour }}시</p>
+                                <p><strong>총 금액 :</strong> {{ reservation.totalprice }}원</p>
+                                <p><strong>상태 :</strong>
+                                    <span :class="['status', getReservationStatusClass(reservation)]">
+                                        {{ getReservationStatusText(reservation) }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="reservation-actions">
+                                <!-- '다가올 예약'이면서 '확정(CONFIRMED)' 상태일 때만 취소 버튼 활성화 -->
+                                <button v-if="isCancellable(reservation)" class="btn-cancel" @click="cancelReservation(reservation.resvno)">
+                                    예약 취소
+                                </button>
+                                <!-- 예약 변경은 복잡하므로 현재는 비활성 (placeholder) -->
+                                <button disabled class="btn-modify" title="예약 변경은 준비 중입니다.">예약 변경</button>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div v-if="!isLoading && filteredReservations.length === 0" class="empty-message">
+                        해당 조건의 예약 내역이 없습니다.
+                    </div>
+                </div>
             </div>
-        </main>
-    </div>
+        </div>
+        <div id="footer-container"></div>
+    </main>
 </body>
 </html>
 

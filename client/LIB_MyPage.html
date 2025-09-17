@@ -4,85 +4,360 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원정보 수정</title>
+    <link rel="stylesheet" href="LIB_Style_Mobile.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        // 헤더와 푸터를 동적으로 불러오는 함수
+        function loadHeaderFooter() {
+            // 헤더 로드
+            fetch('LIB_Header.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
+                    const headerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('header');
+                    document.getElementById('header-container').appendChild(headerContent);
+                });
+            
+            // 푸터 로드
+            fetch('LIB_Footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
+                    const footerContent = new DOMParser()
+                        .parseFromString(data, 'text/html')
+                        .querySelector('footer');
+                    document.getElementById('footer-container').appendChild(footerContent);
+                });
+        }
+    </script>
     <style>
-        body { font-family: Arial, sans-serif; margin-top: 50px; display: flex; justify-content: center; align-items: center; min-height: 80vh; background-color: #f4f4f4; }
-        .container { background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        h2 { text-align: center; margin-bottom: 30px; color: #333; }
-        div { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
-        input[type="text"], input[type="password"], input[type="email"], select { width: calc(100% - 22px); padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 1em; }
-        input[disabled] { background-color: #e9ecef; }
-        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; background-color: #007bff; color: white; margin-right: 10px; }
-        button:last-child { margin-right: 0; }
-        .button-group { text-align: center; margin-top: 20px; }
-        .required-indicator { color: red; margin-left: 5px; }
+        /* 회원정보 수정 페이지 컨테이너 스타일 */
+        .mypage-container {
+            max-width: 480px;
+            margin: 30px auto;
+            padding: 30px 25px 40px;
+            background: #fefcf7; /* 깨끗한 크림색 배경 */
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(176, 122, 58, 0.2);
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #5a4631;
+        }
+
+        /* 제목 스타일 */
+        .mypage-container h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #8c6c4b;
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+        }
+
+        /* 입력 필드 그룹 스타일 */
+        .mypage-container .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* 라벨 스타일 */
+        .mypage-container label {
+            display: block;
+            font-weight: 600;
+            color: #6f5a3e;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        /* 인풋 필드 스타일 */
+        .mypage-container input[type="text"],
+        .mypage-container input[type="password"] {
+            width: 90%;
+            padding: 12px 14px;
+            font-size: 1rem;
+            border: 1.8px solid #d9caae;
+            border-radius: 12px;
+            background-color: #fefcf7;
+            color: #5a4631;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mypage-container input[type="text"]:focus,
+        .mypage-container input[type="password"]:focus {
+            border-color: #b07a3a;
+            outline: none;
+            box-shadow: 0 0 10px rgba(176, 122, 58, 0.4);
+        }
+
+        /* 비활성화된 입력 필드 */
+        .mypage-container input:disabled {
+            background-color: #f0e9e0;
+            color: #8c7b64;
+            cursor: not-allowed;
+        }
+
+        /* 이메일 입력 그룹 */
+        .mypage-container .email-input-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        .mypage-container .email-input-wrapper input:first-child {
+            flex: 1 1 40%;
+        }
+
+        .mypage-container .email-at {
+            color: #6f5a3e;
+            font-weight: 500;
+            margin: 0 4px;
+        }
+
+        .mypage-container .email-input-wrapper input:nth-child(3) {
+            flex: 1 1 30%;
+        }
+
+        .mypage-container .email-input-wrapper select {
+            flex: 1 1 20%;
+            padding: 12px 8px;
+            font-size: 1rem;
+            border: 1.8px solid #d9caae;
+            border-radius: 12px;
+            background-color: #fefcf7;
+            color: #5a4631;
+            transition: border-color 0.3s ease;
+        }
+
+        .mypage-container .email-input-wrapper select:focus {
+            border-color: #b07a3a;
+            outline: none;
+        }
+
+        /* 주소 입력 그룹 */
+        .mypage-container .address-input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .mypage-container .address-input-wrapper input {
+            flex: 1;
+        }
+        .address-input-wrapper input {
+            height: 25px;
+        }
+        .mypage-container .address-input-wrapper button.sub-btn {
+            width: auto;
+            min-width: 100px;
+            height: 50px;
+            padding: 0 15px;
+            background-color: #b07a3a;
+            color: #fff9f0;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(176, 122, 58, 0.5);
+            transition: background-color 0.3s ease;
+        }
+        .address-input-wrapper button.sub-btn {
+            margin-top: 2px;
+        }
+
+        .mypage-container .address-input-wrapper button.sub-btn:hover {
+            background-color: #a06934;
+        }
+
+        /* 필수 입력 표시 */
+        .mypage-container .required-mark {
+            color: #c25e3a; /* 약간 붉은 오렌지 */
+            margin-left: 4px;
+        }
+
+        /* 비밀번호 변경 섹션 */
+        .mypage-container .password-section {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1.5px solid #e6d9c4;
+        }
+
+        .mypage-container .password-section h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #8c6c4b;
+            margin-bottom: 20px;
+        }
+
+        /* 버튼 그룹 */
+        .mypage-container .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 35px;
+        }
+
+        .mypage-container .button-group button {
+            flex: 1;
+            padding: 14px 0;
+            font-weight: 700;
+            font-size: 1.05rem;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .mypage-container .save-btn {
+            background-color: #a06934;
+            color: #fff9f0;
+            box-shadow: 0 5px 15px rgba(160, 105, 52, 0.6);
+        }
+
+        .mypage-container .save-btn:hover {
+            background-color: #8a5a2e;
+        }
+
+        .mypage-container .main-btn {
+            background-color: #8c7b64;
+            color: #fff9f0;
+            box-shadow: 0 5px 15px rgba(140, 123, 100, 0.6);
+        }
+
+        .mypage-container .main-btn:hover {
+            background-color: #7a6a54;
+        }
+
+        .mypage-container .withdraw-btn {
+            background-color: #dc3545;
+            color: #fff9f0;
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.6);
+        }
+
+        .mypage-container .withdraw-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* 안내 문구 */
+        .mypage-container .notice-text {
+            margin-top: 20px;
+            color: #8c7b64;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* 반응형 */
+        @media (max-width: 500px) {
+            .mypage-container {
+                margin: 20px 15px;
+                padding: 25px 20px 30px;
+                box-shadow: none;
+            }
+            
+            .mypage-container h2 {
+                font-size: 2rem;
+            }
+            
+            .mypage-container .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .mypage-container .email-input-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .mypage-container .email-at {
+                align-self: flex-start;
+                margin: 8px 0;
+            }
+            
+            .mypage-container .address-input-wrapper {
+                flex-direction: column;
+            }
+            
+            .mypage-container .address-input-wrapper button.sub-btn {
+                width: 100%;
+                margin-top: 5px;
+            }
+        }
     </style>
 </head>
-<body>
-    <div id="app" class="container">
-        <h2>회원정보 수정</h2>
+<body onload="loadHeaderFooter()">
+    <main id="app">
+        <div id="header-container"></div>
 
-        <div>
-            <label>아이디: 
-                <input type="text" v-model="userId" disabled>
-            </label>
-        </div>
-        <div>
-            <label>이름 <span class="required-indicator">*</span>: 
-                <input type="text" v-model="userName">
-            </label>
-        </div>
-        <div>
-            <label>E-MAIL(이메일) <span class="required-indicator">*</span>: </label>
-            <input type="text" v-model="emailId" style="width: calc(50% - 15px); display: inline-block;"> @
-            <input type="text" v-model="emailDomain" :disabled="selectedDomain !== 'direct'" style="width: calc(40% - 15px); display: inline-block;">
-            <select v-model="selectedDomain" @change="handleDomainChange" style="width: calc(10% + 5px); display: inline-block; vertical-align: top; margin-left: -5px;">
-                <option value="direct">직접 입력</option>
-                <option value="naver.com">naver.com</option>
-                <option value="gmail.com">gmail.com</option>
-                <option value="daum.net">daum.net</option>
-            </select>
-        </div>
-        <div>
-            <label>핸드폰 번호 <span class="required-indicator">*</span>: 
-                <input type="text" v-model="phone" placeholder="(-) 하이픈 제외 숫자만 입력">
-            </label>
-        </div>
-        <div>
-            <label>주소: </label>
-            <input type="text" v-model="address" placeholder="주소를 검색해주세요." readonly>
-            <button @click="fnAddr" style="width: auto; padding: 8px 15px;">주소 검색</button>
-        </div>
+        <div id="main-content">
+            <div class="mypage-container">
+                <h2>회원정보 수정</h2>
 
-        <div class="password-section">
-            <h3>비밀번호 변경</h3>
-            <div>
-                <label>기존 비밀번호 <span class="required-indicator">*</span>: 
-                    <input type="password" v-model="currentPassword" placeholder="현재 비밀번호를 입력하세요">
-                </label>
-            </div>
-            <div>
-                <label>새 비밀번호 <span class="required-indicator">*</span>: 
-                    <input type="password" v-model="newPassword" placeholder="영어 소문자/숫자 포함 6자리 이상">
-                </label>
-            </div>
-            <div>
-                <label>새 비밀번호 확인 <span class="required-indicator">*</span>: 
-                    <input type="password" v-model="confirmNewPassword" placeholder="새 비밀번호를 다시 입력하세요">
-                </label>
+                <div>
+                    <label for="userId_input">아이디</label>
+                    <input type="text" id="userId_input" v-model="userId" disabled>
+                </div>
+                
+                <div>
+                    <label for="userName_input">이름 <span class="required-mark">*</span></label>
+                    <input type="text" id="userName_input" v-model="userName">
+                </div>
+
+                <div class="form-group email-group">
+                    <label for="emailId">E-MAIL(이메일) <span class="required-mark">*</span></label>
+                    <div class="email-input-wrapper">
+                        <input type="text" id="emailId" v-model="emailId">
+                        <span class="email-at">@</span>
+                        <input type="text" v-model="emailDomain" :disabled="selectedDomain !== 'direct'">
+                        <select v-model="selectedDomain" @change="handleDomainChange">
+                            <option value="direct">직접 입력</option>
+                            <option value="naver.com">naver.com</option>
+                            <option value="gmail.com">gmail.com</option>
+                            <option value="daum.net">daum.net</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="phone_input">핸드폰 번호 <span class="required-mark">*</span></label>
+                    <input type="text" id="phone_input" v-model="phone" placeholder="(-) 하이픈 제외 숫자만 입력">
+                </div>
+
+                <div class="form-group address-group">
+                    <label for="address_input">주소</label>
+                    <div class="address-input-wrapper">
+                        <input type="text" id="address_input" v-model="address" placeholder="주소를 검색해주세요." readonly>
+                        <button type="button" class="sub-btn" @click="fnAddr">주소 검색</button>
+                    </div>
+                </div>
+
+                <div class="password-section">
+                    <h3>비밀번호 변경</h3>
+                    <div class="form-group">
+                        <label for="current_pwd">기존 비밀번호 <span class="required-mark">*</span></label>
+                        <input type="password" id="current_pwd" v-model="currentPassword" placeholder="현재 비밀번호를 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="new_pwd">새 비밀번호 <span class="required-mark">*</span></label>
+                        <input type="password" id="new_pwd" v-model="newPassword" placeholder="영어 소문자/숫자 포함 6자리 이상">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_pwd">새 비밀번호 확인 <span class="required-mark">*</span></label>
+                        <input type="password" id="confirm_pwd" v-model="confirmNewPassword" placeholder="새 비밀번호를 다시 입력하세요">
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="save-btn" @click="fnUpdateUser">정보 저장</button>
+                    <button type="button" class="main-btn" @click="goToMain">메인으로</button>
+                    <button type="button" class="withdraw-btn" @click="fnWithdraw">회원 탈퇴</button>
+                </div>
+                <p class="notice-text">* 기존 비밀번호를 입력해야 회원 정보 및 비밀번호 변경이 가능합니다.</p>
             </div>
         </div>
-        
-        <div class="button-group">
-            <button @click="fnUpdateUser">정보 저장</button>
-            <button @click="goToMain">메인으로</button>
-            <button @click="fnWithdraw" style="background-color: #dc3545;">회원 탈퇴</button>
-        </div>
-        <p style="margin-top: 20px; color: #888; font-size: 0.9em;">* 기존 비밀번호를 입력해야 회원 정보 및 비밀번호 변경이 가능합니다.</p>
-    </div>
-    </div>
+        <div id="footer-container"></div>
+    </main>
+</body>
+</html>
 
     <script>
         // jusoCallBack 함수는 전역 함수로 LIB_JusoPopup.html에서 호출됨
@@ -331,5 +606,3 @@
 
         app.mount('#app');
     </script>
-</body>
-</html>

@@ -2,7 +2,7 @@
 
 > **“사용자를 위한, 사용자에 의한, 사용자의 예약 시스템”**
 
-https://github.com/harford-stack/LIB_Project/blob/main/media/readme1.jpg
+![1](https://github.com/harford-stack/LIB_Project/blob/main/media/readme1.jpg)
 
 ---
 

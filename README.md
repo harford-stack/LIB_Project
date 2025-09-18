@@ -4,6 +4,7 @@
 
 <p align="center">
   <img src="./media/readme1.jpg" alt="피드 작성 화면 1" width="200" height="500"/>
+  <img src="./media/readme8.jpg" alt="피드 작성 화면 8" width="200" height="500"/>
   <img src="./media/readme2.jpg" alt="피드 작성 화면 2" width="200" height="500"/>
   <img src="./media/readme3.jpg" alt="피드 작성 화면 3" width="200" height="500"/>
 </p>
@@ -52,10 +53,15 @@
 
 ## 6. 페이지별 주요 기능
 
-### 📝 로그인 / 회원가  
-- 출발지 / 경유지 / 도착지 입력 시 **경로(polyline) 자동 생성** (KakaoMap API 연동)  
-- 사진 미리보기, 삭제 기능 포함한 이미지 다중 업로드 기능
-- 설명, 계절, 난이도, 태그, 장소 유형, 바이크 cc 등 다양한 정보 입력 가능
+### 📝 공통
+# 모바일 전용 화면 환경에 따라 직관적으로 메뉴 보여주기
+# 터치 환경을 고려하여 선택 영역, 버튼, 입력 영역 화면 내 최대화
+# 페이지별 통일성 - 디자인 통일, Header(헤더) 및 Footer(푸터) 고정
+# Header 영역 뒤로가기와 홈버튼(메인으로) 항시 상단 고정하여 편의성 고려
+
+### 📝 로그인 / 회원가입
+- 입력 영역 강조 효과
+- 사용자 에러에 따른 에러 안내를 인라인 메세지로 구현
 
 <p align="center">
   <img src="./media/readme4.jpg" alt="피드 작성 화면 4" width="200" height="500"/>

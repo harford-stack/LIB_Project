@@ -40,6 +40,30 @@
             font-size: 1rem;
         }
 
+        .form-group {
+            margin-bottom: 15px; /* 각 입력 그룹 간 간격 */
+        }
+
+        .error-message {
+            color: #e53e3e; /* 빨간색 오류 메시지 */
+            font-size: 0.85rem;
+            margin-top: 5px;
+            line-height: 1.3;
+            display: block; /* 줄바꿈 및 블록 요소로 표시 */
+        }
+
+        /* 오류가 있는 입력 필드의 테두리를 강조 */
+        .input-error {
+            border: 1px solid #e53e3e !important; /* 중요한 오류 표시이므로 !important를 사용하거나 우선순위를 높임 */
+            box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.2);
+        }
+
+        .general-error {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
         /* 입력 필드 스타일 */
         .login-container input[type="text"],
         .login-container input[type="password"] {
@@ -50,7 +74,7 @@
             border-radius: 12px;
             background-color: #fefcf7;
             color: #5a4631;
-            margin-bottom: 18px;
+            margin-bottom: 10px;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -167,21 +191,33 @@
         <div id="main-content">
             <div class="login-container">
                 <h2>로그인</h2>
-                <div>
-                    <label>
-                        아이디 : 
-                        <input 
-                            type="text"
-                            v-model="userId"
-                            id="userId_input"
-                            placeholder="아이디 입력">
-                    </label>
+                <div class="form-group">
+                    <label for="userId_input">아이디</label>
+                    <input 
+                        type="text"
+                        v-model="userId"
+                        id="userId_input"
+                        placeholder="아이디 입력"
+                        @input="clearErrors"
+                        :class="{ 'input-error' : userIdError || loginError }"
+                    >
+                    <p v-if="userIdError" class="error-message">{{ userIdError }}</p>
                 </div>
-                <div>
-                    <label>
-                        비밀번호 : <input type="password" v-model="pwd" id="pwd_input" placeholder="비밀번호 입력">
-                    </label>
+
+                <div class="form-group">
+                    <label for="pwd_input">비밀번호</label>
+                    <input
+                        type="password"
+                        v-model="pwd"
+                        id="pwd_input"
+                        placeholder="비밀번호 입력"
+                        @input="clearErrors"
+                        :class="{ 'input-error' : pwdError || loginError }"
+                    >
+                    <p v-if="pwdError" class="error-message">{{ pwdError }}</p>
                 </div>
+
+                <p v-if="loginError" class="error-message general-error">{{ loginError }}</p>
                 <div>
                     <button @click="fnLogin">로그인</button>
                 </div>
@@ -232,35 +268,59 @@
             return {
                 // 변수 - (key : value)
                 userId : "",
-                pwd : ""
+                pwd : "",
+                userIdError: null, // 아이디 오류 메시지
+                pwdError: null,    // 비밀번호 오류 메시지
+                loginError: null   // 일반 로그인 실패 메시지
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
+            clearErrors() { // 에러 메시지들을 초기화하는 메소드
+                this.userIdError = null;
+                this.pwdError = null;
+                this.loginError = null;
+            },
+            validateUserId() {
+                this.userIdError = null;
+                if (!this.userId || this.userId.trim() === "") {
+                    this.userIdError = "아이디를 입력해주세요.";
+                    return false;
+                }
+                return true;
+            },
+            validatePwd() {
+                this.pwdError = null;
+                if (!this.pwd || this.pwd.trim() === "") {
+                    this.pwdError = "비밀번호를 입력해주세요.";
+                    return false;
+                }
+                return true;
+            },
             fnLogin: function () {
                 let self = this;
+                // 기존 에러 메시지 모두 초기화
+                self.clearErrors();
 
-                // 아이디 입력 확인
-                if (!self.userId || self.userId.trim() === "") {
-                    // trim() => 문자열 양쪽 끝의 모든 공백(스페이스, 탭, 줄바꿈 등)을 제거
-                    alert("아이디를 입력해주세요");
-                    // 아이디 필드 포커스
+                // 클라이언트 측 유효성 검사
+                const isUserIdValid = self.validateUserId();
+                const isPwdValid = self.validatePwd();
+
+                if (!isUserIdValid) {
                     document.getElementById("userId_input").focus();
                     return;
                 }
-                
-                // 비밀번호 입력 확인
-                if (!self.pwd || self.pwd.trim() === "") {
-                    alert("비밀번호를 입력해주세요");
-                    // 비번 필드 포커스
+                if (!isPwdValid) {
                     document.getElementById("pwd_input").focus();
                     return;
                 }
 
+                // 모든 클라이언트 유효성 검사 통과 시 AJAX 요청
                 let param = {
-                    userId : self.userId.trim(),
-                    pwd : self.pwd.trim()
+                    userId: this.userId.trim(),
+                    pwd: this.pwd.trim()
                 };
+
                 $.ajax({
                     url: "http://localhost:3009/lib/login",
                     dataType: "json",
@@ -269,13 +329,13 @@
                     success: function (data) {
                         if(data.length > 0) {
                             // 로그인 성공
-                            alert(data[0].NAME + "님 환영합니다");
+                            // alert(data[0].NAME + "님 환영합니다");
                             sessionStorage.setItem("sessionId", data[0].USERID);
                             sessionStorage.setItem("sessionName", data[0].NAME);
                             location.href="LIB_Main.html"
                         } else {
                             // 로그인 실패
-                            alert("아이디 또는 비밀번호를 확인해주세요");
+                            self.loginError = "아이디 또는 비밀번호를 확인해주세요.";
                             
                             // 기존 입력 내용 지우기
                             self.userId = "";
@@ -284,6 +344,10 @@
                             // 아이디 필드 포커스
                             document.getElementById("userId_input").focus();
                         }
+                    },
+                    error: (jqXHR, textStatus, errorThrown) => { // 에러 핸들링 추가
+                        console.error("로그인 AJAX 에러:", textStatus, errorThrown);
+                        self.loginError = "로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
                     }
                 });
             }

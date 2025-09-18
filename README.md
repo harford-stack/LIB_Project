@@ -3,7 +3,7 @@
 > **“사용자를 위한, 사용자에 의한, 사용자의 예약 시스템”**
 
 <p align="center">
-  <img src="./media/readme1.jpg"/>
+  <img src="./media/readme1.jpg" width=200px/>
 </p>
 
 ---

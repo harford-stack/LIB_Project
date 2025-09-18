@@ -8,6 +8,7 @@
   <img src="./media/readme2.jpg" alt="피드 작성 화면 2" width="200" height="500"/>
   <img src="./media/readme3.jpg" alt="피드 작성 화면 3" width="200" height="500"/>
 </p>
+
 ---
 
 ## 1. 프로젝트 주제  

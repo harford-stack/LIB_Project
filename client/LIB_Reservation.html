@@ -195,12 +195,12 @@
         }
 
         .seat.available {
-            background-color: #bbf0b3;
-            border-color: #a0d4a0;
+            background-color: #ffecc0;
+            border-color: #ffd880;
         }
 
-        .seat.occupied {
-            background-color: #f0c3bb;
+        .occupied {
+            background-color: #f0c3bb !important;
             border-color: #d4a0a0;
             cursor: not-allowed;
         }
@@ -245,11 +245,11 @@
             grid-template-rows: repeat(3, 1fr);
             gap: 8px;
         }
-        .private-rooms .seat {
+        /* .private-rooms .seat {
             background-color: #e0f2f7;
             border-color: #a7d9eb;
             font-size: 0.85rem;
-        }
+        } */
 
         /* 그룹실 */
         .group-rooms {
@@ -259,10 +259,10 @@
             grid-template-rows: repeat(3, 1fr);
             gap: 8px;
         }
-        .group-rooms .seat {
+        /* .group-rooms .seat {
             background-color: #e8e2f8;
             border-color: #b7a8da;
-        }
+        } */
 
         /* 노트북석 */
         .laptop-seats {
@@ -272,10 +272,10 @@
             grid-template-rows: repeat(2, 1fr);
             gap: 8px;
         }
-        .laptop-seats .seat {
+        /* .laptop-seats .seat {
             background-color: #ffecc0;
             border-color: #ffd880;
-        }
+        } */
 
         /* 휴게실 */
         .break-room {
@@ -407,6 +407,17 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+        .seat-reserved {
+            background-color: #ff0000 !important; /* 빨간색 */
+            color: white;
+            cursor: not-allowed;
+        }
+
+        .seat-available {
+            background-color: #4CAF50; /* 녹색 */
+            color: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body onload="loadHeaderFooter()">
@@ -447,6 +458,7 @@
                     <!-- 좌석 맵 영역 -->
                     <section class="seat-map" v-if="startHour && endHour">
                         <h2>좌석 선택<br>(선택된 시간:<br>{{ startHour }}:00 ~ {{ endHour }}:00)</h2>
+                        <h3>* 빨간색으로 표시된 좌석은<br>예약된 좌석입니다.</h3>
                         <div class="seat-map-container">
                             <!-- 좌석 배치도 -->
                             <div class="seat-layout">
@@ -831,8 +843,9 @@
                 if (!this.userId) {
                     alert('서비스 이용을 위해 로그인이 필요합니다. 로그인 페이지로 이동합니다.');
                     location.href = "LIB_Login.html"; // 로그인 페이지로 이동
-                    return;
+                    return false; // 로그인 안됨
                 }
+                return true; // 로그인 됨
             },
             // 1인 1예약 체크 메소드
             async checkActiveReservations() { // async 키워드를 붙여 비동기 처리
@@ -979,18 +992,20 @@
             }
         },
         mounted() {
-            // 1. 기존 로그인 상태 확인 로직 유지
-            this.checkLoginStatus();
+            // 로그인 체크 먼저 실행
+            if (this.checkLoginStatus()) {
+                // 로그인된 경우에만 아래 함수들 실행
+                this.loadSeats();
+                this.loadSeatTypes();
+                this.checkActiveReservations();
+            }
+            // 로그인 안 된 경우는 여기서 종료
 
-            // 3. 현재 날짜 설정 및 좌석 타입 로드 (기존 로직 유지)
+            // 현재 날짜 설정 및 좌석 타입 로드 (기존 로직 유지)
             this.today = new Date().toISOString().split('T')[0];
             if (!this.selectedDate) { // selectedDate가 아직 설정되지 않았다면 오늘 날짜로
                 this.selectedDate = this.today;
             }
-            this.loadSeatTypes();
-            
-            // 4. 활성 예약 체크 로직 추가
-            this.checkActiveReservations();
         }
     });
 

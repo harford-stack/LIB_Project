@@ -410,7 +410,7 @@ app.get('/reservation', async (req, res) => {
        FROM LIB_RESERVATIONS 
        WHERE USERID = :userId 
          AND RESVSTATUS = 'CONFIRMED'
-         AND (TO_DATE(RESVDATE, 'YYYY-MM-DD') > SYSDATE OR (TO_DATE(RESVDATE, 'YYYY-MM-DD') = TRUNC(SYSDATE) AND END_HOUR > TO_NUMBER(TO_CHAR(SYSDATE, 'HH24'))))`,
+         AND (TO_DATE(RESVDATE, 'YY/MM/DD') > SYSDATE OR (TO_DATE(RESVDATE, 'YY/MM/DD') = TRUNC(SYSDATE) AND END_HOUR > TO_NUMBER(TO_CHAR(SYSDATE, 'HH24'))))`,
       { userId: userId }
     );
     
@@ -593,11 +593,10 @@ app.get('/user/active-reservations', async (req, res) => {
     // 현재 시점 이후의 확정된 예약만 조회 (종료 시간이 현재보다 미래인 예약)
     const result = await connection.execute(
       `SELECT COUNT(*) AS ACTIVE_COUNT
-      FROM LIB_RESERVATIONS 
-      WHERE USERID = :userId 
-      AND RESVSTATUS = 'CONFIRMED'
-      AND TRUNC(RESVDATE) >= TRUNC(SYSDATE)
-      AND END_HOUR > TO_NUMBER(TO_CHAR(SYSDATE, 'HH24'))`,
+       FROM LIB_RESERVATIONS 
+       WHERE USERID = :userId 
+         AND RESVSTATUS = 'CONFIRMED'
+         AND (TO_DATE(RESVDATE, 'YY/MM/DD') > SYSDATE OR (TO_DATE(RESVDATE, 'YY/MM/DD') = TRUNC(SYSDATE) AND END_HOUR > TO_NUMBER(TO_CHAR(SYSDATE, 'HH24'))))`,
          { userId: userId }
     );
     console.log('변수 확인:', {

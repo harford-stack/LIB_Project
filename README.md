@@ -2,11 +2,12 @@
 
 > **“사용자를 위한, 사용자에 의한, 사용자의 예약 시스템”**
 
+<p align="left">
   <img src="./media/readme1.jpg" alt="피드 작성 화면 1" width="200" height="500"/>
   <img src="./media/readme8.jpg" alt="피드 작성 화면 8" width="200" height="500"/>
   <img src="./media/readme2.jpg" alt="피드 작성 화면 2" width="200" height="500"/>
   <img src="./media/readme3.jpg" alt="피드 작성 화면 3" width="200" height="500"/>
-
+</p>
 ---
 
 ## 1. 프로젝트 주제  
@@ -61,7 +62,7 @@
 #### 📌입력 영역 강조 효과
 #### 📌사용자 에러에 따른 에러 안내를 인라인 메세지로 구현
 
-<p align="center">
+<p align="left">
   <img src="./media/readme4.jpg" alt="피드 작성 화면 4" width="200" height="500"/>
   <img src="./media/readme5.jpg" alt="피드 작성 화면 5" width="200" height="500"/>
 </p>

@@ -9,32 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script>
-        // 헤더와 푸터를 동적으로 불러오는 함수
-        function loadHeaderFooter() {
-            // 헤더 로드
-            fetch('LIB_Header.html')
-                .then(response => response.text())
-                .then(data => {
-                    // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
-                    const headerContent = new DOMParser()
-                        .parseFromString(data, 'text/html')
-                        .querySelector('header');
-                    document.getElementById('header-container').appendChild(headerContent);
-                });
-            
-            // 푸터 로드
-            fetch('LIB_Footer.html')
-                .then(response => response.text())
-                .then(data => {
-                    // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
-                    const footerContent = new DOMParser()
-                        .parseFromString(data, 'text/html')
-                        .querySelector('footer');
-                    document.getElementById('footer-container').appendChild(footerContent);
-                });
-        }
-    </script>
     <style>
         .location-content-container {
             max-width: 800px;
@@ -143,3 +117,30 @@
     </main>
 </body>
 </html>
+
+<script>
+    // 헤더와 푸터를 동적으로 불러오는 함수
+    function loadHeaderFooter() {
+        // 헤더 로드
+        fetch('LIB_Header.html')
+            .then(response => response.text())
+            .then(data => {
+                // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
+                const headerContent = new DOMParser()
+                    .parseFromString(data, 'text/html')
+                    .querySelector('header');
+                document.getElementById('header-container').appendChild(headerContent);
+            });
+        
+        // 푸터 로드
+        fetch('LIB_Footer.html')
+            .then(response => response.text())
+            .then(data => {
+                // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
+                const footerContent = new DOMParser()
+                    .parseFromString(data, 'text/html')
+                    .querySelector('footer');
+                document.getElementById('footer-container').appendChild(footerContent);
+            });
+    }
+</script>

@@ -3,9 +3,9 @@
 > **“사용자를 위한, 사용자에 의한, 사용자의 예약 시스템”**
 
 <p align="center">
-  <img src="./media/readme1.jpg" alt="피드 작성 화면 1" width="700" height="500"/>
-  <img src="./media/readme2.jpg" alt="피드 작성 화면 2" width="700" height="500"/>
-  <img src="./media/readme2.jpg" alt="피드 작성 화면 3" width="700" height="500"/>
+  <img src="./media/readme1.jpg" alt="피드 작성 화면 1" width="200" height="500"/>
+  <img src="./media/readme2.jpg" alt="피드 작성 화면 2" width="200" height="500"/>
+  <img src="./media/readme2.jpg" alt="피드 작성 화면 3" width="200" height="500"/>
 </p>
 
 ---

@@ -44,7 +44,6 @@
 
 ## 5. 사용 기술
 | 분류 | 기술 |
-|------|------|
 | Frontend | Vue.js |
 | Backend | Node.js, Express |
 | Database | Oracle SQL |

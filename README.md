@@ -43,7 +43,11 @@
 ---
 
 ## 5. 사용 기술
-
+| 분류 | 기술 |
+|------|------|
+| Frontend | Vue.js |
+| Backend | Node.js, Express |
+| Database | Oracle SQL |
 ---
 
 ## 6. 페이지별 주요 기능

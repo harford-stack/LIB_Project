@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
     <style>
         /* 전체 예약 페이지 컨테이너 */
         .reservation-container {
@@ -541,30 +544,6 @@
 </html>
 
 <script>
-    // 헤더와 푸터를 동적으로 불러오는 함수
-    function loadHeaderFooter() {
-        // 헤더 로드
-        fetch('LIB_Header.html')
-            .then(response => response.text())
-            .then(data => {
-                // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
-                const headerContent = new DOMParser()
-                    .parseFromString(data, 'text/html')
-                    .querySelector('header');
-                document.getElementById('header-container').appendChild(headerContent);
-            });
-        
-        // 푸터 로드
-        fetch('LIB_Footer.html')
-            .then(response => response.text())
-            .then(data => {
-                // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
-                const footerContent = new DOMParser()
-                    .parseFromString(data, 'text/html')
-                    .querySelector('footer');
-                document.getElementById('footer-container').appendChild(footerContent);
-            });
-    }
     const app = Vue.createApp({
         data() {
             return {
@@ -731,9 +710,8 @@
                     alert('좌석, 시작 시간, 종료 시간을 모두 선택해주세요.');
                     return;
                 }
-                // 예약 정보 객체 생성
+                // 예약 정보 객체 생성 (userId는 서버에서 토큰으로 가져옴)
                 const reservationData = {
-                    userId: this.userId,
                     seatNo: this.selectedSeat.seatno,
                     resvDate: this.selectedDate,
                     startHour: this.startHour,
@@ -741,12 +719,28 @@
                     totalPrice: this.calculateTotalPrice()
                 };
 
+                // 토큰 확인
+                const token = window.getToken ? window.getToken() : null;
+                console.log('예약 요청 - 토큰 확인:', token ? '토큰 있음' : '토큰 없음');
+                
+                if (!token) {
+                    alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+                    location.href = 'LIB_Login.html';
+                    return;
+                }
+                
                 // AJAX를 통한 예약 처리
-                $.ajax({
-                    url: "http://localhost:3009/reservation",
+                let ajaxOptions = {
+                    url: getApiUrl(API_CONFIG.ENDPOINTS.RESERVATION),
                     dataType: "json",
                     type: "GET",
                     data: reservationData,
+                    beforeSend: function(xhr) {
+                        if (token) {
+                            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                            console.log('예약 요청 - Authorization 헤더 추가됨');
+                        }
+                    },
                     success: function (data) {
                         if (data.success) {
                             self.message = '예약이 성공적으로 완료되었습니다! 메인 페이지로 이동합니다.';
@@ -767,12 +761,46 @@
                         }
                     },
                     error: function (xhr, status, error) {
-                        console.error('Error:', error);
-                        self.message = '예약 처리 중 서버 통신 오류가 발생했습니다.';
-                        self.isSuccess = false;
-                        alert(self.message); 
+                        console.error('예약 요청 에러:', error);
+                        console.error('Status:', xhr.status);
+                        console.error('Response:', xhr.responseText);
+                        
+                        let errorMessage = '';
+                        try {
+                            const errorData = JSON.parse(xhr.responseText);
+                            errorMessage = errorData.error || errorData.message || '알 수 없는 오류';
+                        } catch (e) {
+                            errorMessage = xhr.responseText || '서버 통신 오류';
+                        }
+                        
+                        if (xhr.status === 401 || xhr.status === 403) {
+                            self.message = '인증이 필요합니다. 다시 로그인해주세요.';
+                            alert(self.message);
+                            if (window.redirectToLogin) {
+                                window.redirectToLogin();
+                            } else {
+                                location.href = 'LIB_Login.html';
+                            }
+                        } else if (xhr.status === 409) {
+                            // 충돌 오류 (이미 예약됨 등)
+                            self.message = errorMessage || '예약 처리 중 충돌이 발생했습니다.';
+                            self.isSuccess = false;
+                            alert(self.message);
+                        } else {
+                            self.message = errorMessage || '예약 처리 중 서버 통신 오류가 발생했습니다.';
+                            self.isSuccess = false;
+                            alert(self.message);
+                        }
                     }
-                });
+                };
+                
+                // 토큰을 query에 추가 (GET 요청 호환성)
+                if (token) {
+                    ajaxOptions.data.token = token;
+                }
+                
+                // AJAX 요청 실행
+                $.ajax(ajaxOptions);
             },
 
             // 좌석 정보 불러오기
@@ -786,7 +814,7 @@
                 }
 
                 $.ajax({
-                    url: "http://localhost:3009/seats",
+                    url: getApiUrl(API_CONFIG.ENDPOINTS.SEATS),
                     dataType: "json",
                     type: "GET",
                     data: { 
@@ -819,7 +847,7 @@
             loadSeatTypes() {
                 let self = this;
                 $.ajax({
-                    url: "http://localhost:3009/seattypes",
+                    url: getApiUrl(API_CONFIG.ENDPOINTS.SEAT_TYPES),
                     dataType: "json",
                     type: "GET",
                     success: function (data) {
@@ -839,27 +867,55 @@
             },
             // Mounted에서 로그인 여부 확인
             checkLoginStatus() {
+                // JWT 토큰 기반 인증 확인
+                if (window.getAuth) {
+                    const auth = window.getAuth();
+                    if (auth && auth.user) {
+                        this.userId = auth.user.USERID;
+                        return true;
+                    }
+                }
+                
+                // 기존 방식 호환성 (sessionId)
                 this.userId = sessionStorage.getItem("sessionId") || '';
                 if (!this.userId) {
                     alert('서비스 이용을 위해 로그인이 필요합니다. 로그인 페이지로 이동합니다.');
-                    location.href = "LIB_Login.html"; // 로그인 페이지로 이동
-                    return false; // 로그인 안됨
+                    location.href = "LIB_Login.html";
+                    return false;
                 }
-                return true; // 로그인 됨
+                return true;
             },
             // 1인 1예약 체크 메소드
             async checkActiveReservations() { // async 키워드를 붙여 비동기 처리
                 let self = this;
                 console.log('checkActiveReservations 함수 실행됨');
                 console.log('현재 userId:', self.userId);
+                
+                // 토큰 확인
+                const token = window.getToken ? window.getToken() : null;
+                console.log('토큰 확인:', token ? '토큰 있음' : '토큰 없음');
+                
+                if (!token) {
+                    console.warn('토큰이 없습니다. 인증이 필요합니다.');
+                    self.hasActiveReservation = false;
+                    return;
+                }
+                
                 try {
-                    console.log('AJAX 요청 시작, 파라미터:', { userId: self.userId });
-                    const response = await $.ajax({
-                        url: "http://localhost:3009/user/active-reservations",
+                    let ajaxOptions = {
+                        url: getApiUrl(API_CONFIG.ENDPOINTS.ACTIVE_RESERVATIONS),
                         dataType: "json",
                         type: "GET",
-                        data: { userId: self.userId }
-                    });
+                        data: {},
+                        beforeSend: function(xhr) {
+                            if (token) {
+                                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                                console.log('Authorization 헤더 추가됨');
+                            }
+                        }
+                    };
+                    
+                    const response = await $.ajax(ajaxOptions);
                     
                     console.log('서버 응답 데이터:', response);
                     if (response.success && response.hasActiveReservation) {
@@ -880,14 +936,22 @@
                     }
                 } catch (err) {
                     console.error('활성 예약 확인 오류 상세 정보:', err);
-                    console.log('에러 객체 타입:', typeof err);
-                    console.log('에러 메시지:', err.message);
-                    console.log('에러 상태:', err.status);
-                    console.error('Error checking active reservations:', err);
-                    // 오류 발생 시에도 UI는 활성화 상태로 유지 (사용자에게 불편 주지 않기 위해)
+                    console.error('에러 상태:', err.status);
+                    console.error('에러 응답:', err.responseJSON || err.responseText);
+                    
+                    // 401/403 오류는 인증 문제이므로 조용히 처리
+                    if (err.status === 401 || err.status === 403) {
+                        console.log('인증 오류 - 토큰이 없거나 만료됨');
+                        // 인증 오류는 조용히 처리 (로그인 페이지로 리다이렉트하지 않음)
+                        self.hasActiveReservation = false;
+                        self.activeReservationWarningDisplayed = false;
+                        return;
+                    }
+                    // 기타 오류는 경고 표시하지 않음 (사용자 경험 개선)
+                    console.error('예약 상태 확인 중 오류:', err);
                     self.hasActiveReservation = false;
                     self.activeReservationWarningDisplayed = false;
-                    alert('예약 상태 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                    // alert 제거 - 조용히 실패 처리
                 }
             },
             

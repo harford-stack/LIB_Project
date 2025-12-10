@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
     <style>
         /* 회원정보 수정 페이지 컨테이너 스타일 */
         .mypage-container {
@@ -360,30 +363,6 @@
 </html>
 
 <script>
-    // 헤더와 푸터를 동적으로 불러오는 함수
-    function loadHeaderFooter() {
-        // 헤더 로드
-        fetch('LIB_Header.html')
-            .then(response => response.text())
-            .then(data => {
-                // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
-                const headerContent = new DOMParser()
-                    .parseFromString(data, 'text/html')
-                    .querySelector('header');
-                document.getElementById('header-container').appendChild(headerContent);
-            });
-        
-        // 푸터 로드
-        fetch('LIB_Footer.html')
-            .then(response => response.text())
-            .then(data => {
-                // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
-                const footerContent = new DOMParser()
-                    .parseFromString(data, 'text/html')
-                    .querySelector('footer');
-                document.getElementById('footer-container').appendChild(footerContent);
-            });
-    }
 
     // jusoCallBack 함수는 전역 함수로 LIB_JusoPopup.html에서 호출됨
     // 이 함수가 Vue 앱 인스턴스의 address 데이터를 업데이트하도록 수정 필요
@@ -476,11 +455,17 @@
                 }
                 self.userId = loggedInUserId;
 
-                $.ajax({
-                    url: "http://localhost:3009/lib/userInfo",
+                let ajaxOptions = {
+                    url: getApiUrl(API_CONFIG.ENDPOINTS.USER_INFO),
                     dataType: "json",
                     type: "GET",
-                    data: { userId: loggedInUserId },
+                    data: {},
+                    beforeSend: function(xhr) {
+                        const token = window.getToken ? window.getToken() : null;
+                        if (token) {
+                            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                        }
+                    },
                     success: function(data) {
                         if(data) { // data가 있을 때만 처리 (null 또는 undefined 체크)
                             self.userName = data.NAME;
@@ -506,11 +491,26 @@
                         }
                     },
                     error: function(xhr, status, error) {
-                        alert("사용자 정보를 불러오는 중 오류가 발생했습니다.");
-                        console.error(error);
-                        location.href = "LIB_Main.html";
+                        if (xhr.status === 401 || xhr.status === 403) {
+                            alert("인증이 필요합니다. 다시 로그인해주세요.");
+                            window.redirectToLogin();
+                        } else {
+                            alert("사용자 정보를 불러오는 중 오류가 발생했습니다.");
+                            console.error(error);
+                            location.href = "LIB_Main.html";
+                        }
                     }
-                });
+                };
+                
+                // 토큰을 query에 추가
+                if (window.getToken) {
+                    const token = window.getToken();
+                    if (token) {
+                        ajaxOptions.data.token = token;
+                    }
+                }
+                
+                $.ajax(ajaxOptions);
             },
             // 이메일 도메인 선택 처리 메소드 수정
             handleDomainChange() {
@@ -636,11 +636,17 @@
                     newPassword: self.newPassword.trim()
                 };
 
-                $.ajax({
-                    url: "http://localhost:3009/lib/updateUserInfo",
+                let updateAjaxOptions = {
+                    url: getApiUrl(API_CONFIG.ENDPOINTS.UPDATE_USER_INFO),
                     dataType: "json",
-                    type: "GET", // 학원 지침에 따라 GET 사용 (UPDATE는 POST가 일반적)
+                    type: "GET",
                     data: param,
+                    beforeSend: function(xhr) {
+                        const token = window.getToken ? window.getToken() : null;
+                        if (token) {
+                            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                        }
+                    },
                     success: function(data) {
                         if(data.success) {
                             alert(data.message); // 서버에서 전달받은 메시지 사용
@@ -653,10 +659,25 @@
                         }
                     },
                     error: function(xhr, status, error) {
-                        alert("회원 정보 수정 중 오류가 발생했습니다.");
-                        console.error(error);
+                        if (xhr.status === 401 || xhr.status === 403) {
+                            alert("인증이 필요합니다. 다시 로그인해주세요.");
+                            window.redirectToLogin();
+                        } else {
+                            alert("회원 정보 수정 중 오류가 발생했습니다.");
+                            console.error(error);
+                        }
                     }
-                });
+                };
+                
+                // 토큰을 query에 추가
+                if (window.getToken) {
+                    const token = window.getToken();
+                    if (token) {
+                        updateAjaxOptions.data.token = token;
+                    }
+                }
+                
+                $.ajax(updateAjaxOptions);
             },
             goToMain: function() {
                 location.href = "LIB_Main.html"; // 메인 페이지로 이동
@@ -676,21 +697,31 @@
                 }
                 
                 // 서버에 탈퇴 요청 전송
-                $.ajax({
-                    url: "http://localhost:3009/lib/withdraw",
+                let withdrawAjaxOptions = {
+                    url: getApiUrl(API_CONFIG.ENDPOINTS.WITHDRAW),
                     dataType: "json",
-                    type: "GET", // 학원 지침에 따라 GET 사용 (보안상 POST 권장)
+                    type: "GET",
                     data: {
                         userId: self.userId,
                         password: self.currentPassword.trim()
+                    },
+                    beforeSend: function(xhr) {
+                        const token = window.getToken ? window.getToken() : null;
+                        if (token) {
+                            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                        }
                     },
                     success: function(data) {
                         if(data.success) {
                             alert("회원 탈퇴가 완료되었습니다. 그동안 이용해 주셔서 감사합니다.");
                             
                             // 세션 삭제
-                            sessionStorage.removeItem("sessionId");
-                            sessionStorage.removeItem("sessionName");
+                            if (window.clearAuth) {
+                                window.clearAuth();
+                            } else {
+                                sessionStorage.removeItem("sessionId");
+                                sessionStorage.removeItem("sessionName");
+                            }
                             
                             // 메인 페이지로 리다이렉트
                             location.href = "LIB_Main.html";
@@ -699,10 +730,25 @@
                         }
                     },
                     error: function(xhr, status, error) {
-                        alert("회원 탈퇴 중 오류가 발생했습니다.");
-                        console.error(error);
+                        if (xhr.status === 401 || xhr.status === 403) {
+                            alert("인증이 필요합니다. 다시 로그인해주세요.");
+                            window.redirectToLogin();
+                        } else {
+                            alert("회원 탈퇴 중 오류가 발생했습니다.");
+                            console.error(error);
+                        }
                     }
-                });
+                };
+                
+                // 토큰을 query에 추가
+                if (window.getToken) {
+                    const token = window.getToken();
+                    if (token) {
+                        withdrawAjaxOptions.data.token = token;
+                    }
+                }
+                
+                $.ajax(withdrawAjaxOptions);
             }
         },
         mounted() {

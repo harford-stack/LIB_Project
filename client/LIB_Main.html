@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
     <style>
         .main-container {
             max-width: 360px; /* 모바일 고정 폭 내에서 로그인 박스의 최대 너비 */
@@ -54,30 +57,6 @@
 </html>
 
 <script>
-    // 헤더와 푸터를 동적으로 불러오는 함수
-    function loadHeaderFooter() {
-        // 헤더 로드
-        fetch('LIB_Header.html')
-            .then(response => response.text())
-            .then(data => {
-                // LIB_Header.html에서 <header> 태그 부분만 추출하여 삽입
-                const headerContent = new DOMParser()
-                    .parseFromString(data, 'text/html')
-                    .querySelector('header');
-                document.getElementById('header-container').appendChild(headerContent);
-            });
-        
-        // 푸터 로드
-        fetch('LIB_Footer.html')
-            .then(response => response.text())
-            .then(data => {
-                // LIB_Footer.html에서 <footer> 태그 부분만 추출하여 삽입
-                const footerContent = new DOMParser()
-                    .parseFromString(data, 'text/html')
-                    .querySelector('footer');
-                document.getElementById('footer-container').appendChild(footerContent);
-            });
-    }
     const app = Vue.createApp({
         data() {
             return {
@@ -87,11 +66,7 @@
         },
         methods: {
             logout: function() {
-                sessionStorage.removeItem("sessionId");
-                sessionStorage.removeItem("sessionName");
-                alert("로그아웃 되었습니다.");
-                // 로그아웃 후 페이지를 새로고침하여 비로그인 상태 UI 표시
-                window.location.reload(); 
+                logout();
             },
             goToMyPage: function() {
                 location.href = "LIB_MyPage.html";
@@ -117,9 +92,69 @@
         },
         mounted() {
             let self = this;
-            // 페이지 로드 시 세션 스토리지에서 사용자 정보 가져오기
-            self.sessionId = sessionStorage.getItem("sessionId");
-            self.userName = sessionStorage.getItem("sessionName");
+            // JWT 토큰 기반 인증 확인
+            if (window.getAuth) {
+                const auth = window.getAuth();
+                if (auth && auth.user) {
+                    self.sessionId = auth.user.USERID;
+                    self.userName = auth.user.NAME;
+                }
+            } else {
+                // 기존 방식 호환성
+                self.sessionId = sessionStorage.getItem("sessionId");
+                self.userName = sessionStorage.getItem("sessionName");
+            }
+            
+            // URL 파라미터에서 토큰 확인 (소셜 로그인 후 리다이렉트)
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const userStr = urlParams.get('user');
+            const error = urlParams.get('error');
+            
+            // 에러 처리
+            if (error) {
+                alert('로그인 실패: ' + decodeURIComponent(error));
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            
+            // 토큰 및 사용자 정보 처리 (이미 처리된 경우 스킵)
+            if (token && userStr) {
+                // 이미 인증 정보가 저장되어 있는지 확인
+                const existingAuth = window.getAuth ? window.getAuth() : null;
+                const existingToken = window.getToken ? window.getToken() : null;
+                
+                // 같은 토큰이면 이미 처리된 것으로 간주
+                if (existingToken === token) {
+                    console.log('이미 처리된 소셜 로그인입니다. 스킵합니다.');
+                    // URL에서 파라미터만 제거
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+                
+                try {
+                    const user = JSON.parse(decodeURIComponent(userStr));
+                    console.log('소셜 로그인 성공:', user);
+                    
+                    if (window.saveAuth) {
+                        window.saveAuth(token, user);
+                        console.log('인증 정보 저장 완료');
+                    } else {
+                        console.error('saveAuth 함수가 없습니다. auth.js가 로드되었는지 확인하세요.');
+                    }
+                    
+                    self.sessionId = user.USERID;
+                    self.userName = user.NAME;
+                    
+                    // URL에서 파라미터 제거
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    
+                    // 성공 메시지 (한 번만 표시)
+                    alert(`${user.NAME}님 환영합니다!`);
+                } catch (e) {
+                    console.error('소셜 로그인 처리 오류:', e);
+                    alert('로그인 처리 중 오류가 발생했습니다.');
+                }
+            }
         }
     });
 

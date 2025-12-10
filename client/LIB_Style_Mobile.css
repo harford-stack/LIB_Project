@@ -116,7 +116,7 @@ body {
 #main-content {
     flex: 1;
     padding: 24px 20px;
-    background-image: url("../media/lib2.jpg");
+    background-image: url("media/lib2.jpg");
     background-position: center;
     background-color: #fffef9;
     /* 배경색 유지 */
@@ -257,10 +257,33 @@ span {
     color: #6f5a3e;
 }
 
-/* 반응형 간단 예시 */
+/* 반응형 디자인 개선 */
+/* 태블릿 (768px 이상) */
+@media (min-width: 768px) {
+    #app {
+        width: 100%;
+        max-width: 768px;
+        min-width: 375px;
+    }
+    
+    .main-container,
+    .login-container,
+    .join-container,
+    .find-container {
+        max-width: 500px;
+    }
+    
+    .reservation-container {
+        max-width: 1200px;
+    }
+}
+
+/* 모바일 (400px 이하) */
 @media (max-width: 400px) {
     #app {
         width: 100vw;
+        min-width: 100vw;
+        max-width: 100vw;
         border-radius: 0;
         box-shadow: none;
     }
@@ -274,5 +297,49 @@ span {
     button {
         font-size: 0.95rem;
         padding: 12px 0;
+    }
+    
+    .main-container,
+    .login-container,
+    .join-container,
+    .find-container {
+        margin: 20px 10px;
+        padding: 20px 15px;
+    }
+}
+
+/* 작은 모바일 (320px 이하) */
+@media (max-width: 320px) {
+    #app {
+        font-size: 0.9rem;
+    }
+    
+    .header {
+        font-size: 1.2rem;
+        height: 50px;
+    }
+    
+    button {
+        font-size: 0.85rem;
+        padding: 10px 0;
+    }
+}
+
+/* 가로 모드 (landscape) */
+@media (orientation: landscape) and (max-height: 500px) {
+    #app {
+        height: 100vh;
+    }
+    
+    .header {
+        height: 50px;
+    }
+    
+    footer {
+        height: 40px;
+    }
+    
+    #main-content {
+        padding: 15px 20px;
     }
 }

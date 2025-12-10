@@ -12,8 +12,8 @@
 ![OAuth](https://img.shields.io/badge/OAuth-2.0-4285F4?logo=google&logoColor=white)
 
 <p align="center">
-  <!-- 스크린샷은 여기에 추가하세요 -->
   <img src="./media/readme1.jpg" alt="메인 화면" width="200" height="500"/>
+  <img src="./media/readme3.jpg" alt="예약 화면" width="200" height="500"/>
   <img src="./media/readme2.jpg" alt="예약 화면" width="200" height="500"/>
 </p>
 
@@ -36,13 +36,13 @@
 
 ### 기술적 특징
 
-| 특징                        | 설명                                                      |
-| --------------------------- | --------------------------------------------------------- |
-| **모바일 전용 아키텍처**    | Vue.js와 jQuery를 활용한 모바일 최적화 인터페이스         |
-| **JWT + argon2 보안**       | 토큰 기반 인증과 강력한 비밀번호 해싱으로 안전한 사용자 인증 |
-| **OAuth 2.0 소셜 로그인**   | 카카오, 네이버, 구글 소셜 로그인 지원                    |
-| **Oracle Database**          | 안정적인 관계형 데이터베이스로 예약 데이터 관리           |
-| **서버 사이드 검증**        | 이메일/전화번호 형식 검증 및 SQL 인젝션 방지             |
+| 특징                      | 설명                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| **모바일 전용 아키텍처**  | Vue.js와 jQuery를 활용한 모바일 최적화 인터페이스            |
+| **JWT + argon2 보안**     | 토큰 기반 인증과 강력한 비밀번호 해싱으로 안전한 사용자 인증 |
+| **OAuth 2.0 소셜 로그인** | 카카오, 네이버, 구글 소셜 로그인 지원                        |
+| **Oracle Database**       | 안정적인 관계형 데이터베이스로 예약 데이터 관리              |
+| **서버 사이드 검증**      | 이메일/전화번호 형식 검증 및 SQL 인젝션 방지                 |
 
 ### 사용자 경험 특징
 
@@ -63,29 +63,29 @@
 
 ### Frontend
 
-| 기술명                                                                                      | 설명                                                       |
-| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| ![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?logo=vue.js&logoColor=white)          | Vue.js 2.x - 프론트엔드 프레임워크                         |
-| ![jQuery](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=white)         | jQuery - AJAX 통신 및 DOM 조작                              |
-| ![CSS](https://img.shields.io/badge/CSS-1572B6?logo=css3&logoColor=white)                 | CSS - 모바일 전용 반응형 디자인                            |
+| 기술명                                                                            | 설명                               |
+| --------------------------------------------------------------------------------- | ---------------------------------- |
+| ![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?logo=vue.js&logoColor=white) | Vue.js 2.x - 프론트엔드 프레임워크 |
+| ![jQuery](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=white) | jQuery - AJAX 통신 및 DOM 조작     |
+| ![CSS](https://img.shields.io/badge/CSS-1572B6?logo=css3&logoColor=white)         | CSS - 모바일 전용 반응형 디자인    |
 
 ### Backend
 
-| 기술명                                                                                          | 설명                                          |
-| ----------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)           | Node.js - 비동기 이벤트 기반 서버 런타임      |
-| ![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)            | Express - 간결한 웹 프레임워크                |
-| ![Oracle](https://img.shields.io/badge/Oracle-F80000?logo=oracle&logoColor=white)              | Oracle Database - 관계형 데이터베이스         |
-| ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white)             | JWT - 토큰 기반 인증                          |
-| ![argon2](https://img.shields.io/badge/argon2-FF6B6B?logo=argon2&logoColor=white)             | argon2 - 비밀번호 해싱                        |
-| ![OAuth](https://img.shields.io/badge/OAuth-2.0-4285F4?logo=google&logoColor=white)            | OAuth 2.0 - 소셜 로그인 (카카오, 네이버, 구글) |
+| 기술명                                                                               | 설명                                           |
+| ------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white) | Node.js - 비동기 이벤트 기반 서버 런타임       |
+| ![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white) | Express - 간결한 웹 프레임워크                 |
+| ![Oracle](https://img.shields.io/badge/Oracle-F80000?logo=oracle&logoColor=white)    | Oracle Database - 관계형 데이터베이스          |
+| ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white)   | JWT - 토큰 기반 인증                           |
+| ![argon2](https://img.shields.io/badge/argon2-FF6B6B?logo=argon2&logoColor=white)    | argon2 - 비밀번호 해싱                         |
+| ![OAuth](https://img.shields.io/badge/OAuth-2.0-4285F4?logo=google&logoColor=white)  | OAuth 2.0 - 소셜 로그인 (카카오, 네이버, 구글) |
 
 ### 개발 도구
 
-| 기술명                                                                                      | 설명                                |
-| ------------------------------------------------------------------------------------------- | ----------------------------------- |
-| ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=white)       | Swagger - API 문서화                |
-| ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)                   | Git - 버전 관리                     |
+| 기술명                                                                               | 설명                 |
+| ------------------------------------------------------------------------------------ | -------------------- |
+| ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=white) | Swagger - API 문서화 |
+| ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)             | Git - 버전 관리      |
 
 ---
 
@@ -104,7 +104,7 @@
 #### 로그인 & 회원가입
 
 <p align="center">
-  <img src="./media/readme4.jpg" alt="로그인" width="200" height="500" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="./media/readme1.jpg" alt="로그인" width="200" height="500" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="./media/readme5.jpg" alt="회원가입" width="200" height="500" />
 </p>
 
@@ -298,13 +298,13 @@ PageStudy/
 
 ## ✨ 주요 기능 요약
 
-| 기능           | 기술적 특징                                    |
-| -------------- | ---------------------------------------------- |
-| 사용자 인증    | JWT 토큰, argon2 해싱, OAuth 2.0 소셜 로그인  |
-| 좌석 예약      | 실시간 좌석 상태 조회, 1인 1예약 원칙         |
-| 예약 관리      | 예약 내역 조회, 예약 취소, 활성 예약 확인      |
-| 보안 기능      | 서버 사이드 검증, SQL 인젝션 방지             |
-| 모바일 최적화  | 터치 친화적 UI, 직관적인 네비게이션            |
+| 기능          | 기술적 특징                                  |
+| ------------- | -------------------------------------------- |
+| 사용자 인증   | JWT 토큰, argon2 해싱, OAuth 2.0 소셜 로그인 |
+| 좌석 예약     | 실시간 좌석 상태 조회, 1인 1예약 원칙        |
+| 예약 관리     | 예약 내역 조회, 예약 취소, 활성 예약 확인    |
+| 보안 기능     | 서버 사이드 검증, SQL 인젝션 방지            |
+| 모바일 최적화 | 터치 친화적 UI, 직관적인 네비게이션          |
 
 ---
 

@@ -313,8 +313,6 @@ PageStudy/
 - [API 문서](./docs/API.md) - API 엔드포인트 상세 설명
 - [개발일지](./docs/DAY1_개발일지.md) - 일자별 개발 과정
 - [포트폴리오 요약본](./docs/포트폴리오_요약본.md) - 프로젝트 핵심 요약
-- [소셜 로그인 설정 가이드](./SOCIAL_LOGIN_SETUP_GUIDE.md) - 소셜 로그인 설정 방법
-- [데이터베이스 마이그레이션 가이드](./MIGRATION_GUIDE.md) - 데이터베이스 마이그레이션 방법
 
 ---
 

@@ -436,5 +436,3 @@ Authorization: Bearer {token}
 | 500 | 서버 오류 |
 
 ---
-
-**작성일**: 2025년 9월 19일

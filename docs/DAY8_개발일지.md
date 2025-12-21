@@ -59,9 +59,7 @@
 - `README.md` - 프로젝트 소개 및 개요
 - `docs/API.md` - API 엔드포인트 상세 설명
 - `docs/DAY1~DAY8_개발일지.md` - 일자별 개발 과정
-- `docs/포트폴리오_요약본.md` - 프로젝트 핵심 요약
-- `SOCIAL_LOGIN_SETUP_GUIDE.md` - 소셜 로그인 설정 가이드
-- `MIGRATION_GUIDE.md` - 데이터베이스 마이그레이션 가이드
+- `docs/트러블슈팅.md` - 주요 이슈 개선 및 해결 정리
 
 ### 4. 코드 최종 점검
 

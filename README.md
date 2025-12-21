@@ -65,8 +65,8 @@
 
 | 기술명                                                                            | 설명                               |
 | --------------------------------------------------------------------------------- | ---------------------------------- |
-| ![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?logo=vue.js&logoColor=white) | Vue.js 2.x - 프론트엔드 프레임워크 |
-| ![jQuery](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=white) | jQuery - AJAX 통신 및 DOM 조작     |
+| ![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?logo=vue.js&logoColor=white) | Vue.js 3.x - 프론트엔드 프레임워크 |
+| ![jQuery](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=white) | jQuery 3.7.1 - AJAX 통신 및 DOM 조작     |
 | ![CSS](https://img.shields.io/badge/CSS-1572B6?logo=css3&logoColor=white)         | CSS - 모바일 전용 반응형 디자인    |
 
 ### Backend
@@ -74,8 +74,8 @@
 | 기술명                                                                               | 설명                                           |
 | ------------------------------------------------------------------------------------ | ---------------------------------------------- |
 | ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white) | Node.js - 비동기 이벤트 기반 서버 런타임       |
-| ![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white) | Express - 간결한 웹 프레임워크                 |
-| ![Oracle](https://img.shields.io/badge/Oracle-F80000?logo=oracle&logoColor=white)    | Oracle Database - 관계형 데이터베이스          |
+| ![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white) | Express 5.1.0 - 간결한 웹 프레임워크                 |
+| ![Oracle](https://img.shields.io/badge/Oracle-F80000?logo=oracle&logoColor=white)    | Oracle Database (oracledb 6.9.0) - 관계형 데이터베이스          |
 | ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white)   | JWT - 토큰 기반 인증                           |
 | ![argon2](https://img.shields.io/badge/argon2-FF6B6B?logo=argon2&logoColor=white)    | argon2 - 비밀번호 해싱                         |
 | ![OAuth](https://img.shields.io/badge/OAuth-2.0-4285F4?logo=google&logoColor=white)  | OAuth 2.0 - 소셜 로그인 (카카오, 네이버, 구글) |

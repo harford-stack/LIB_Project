@@ -33,8 +33,8 @@
 #### Frontend 설정
 - Vue.js 프로젝트 구조 설정
 - 필요한 라이브러리:
-  - Vue.js 2.x
-  - jQuery (AJAX 통신)
+  - Vue.js 3.x
+  - jQuery 3.7.1 (AJAX 통신)
   - CSS 파일 구조화
 
 ### 2. 데이터베이스 설계
@@ -125,8 +125,8 @@
 ## 🛠 기술 스택 선정
 
 ### Frontend
-- **Vue.js 2.x**: 프론트엔드 프레임워크
-- **jQuery**: AJAX 통신 및 DOM 조작
+- **Vue.js 3.x**: 프론트엔드 프레임워크
+- **jQuery 3.7.1**: AJAX 통신 및 DOM 조작
 - **CSS**: 모바일 전용 반응형 디자인
 
 ### Backend

@@ -5,7 +5,7 @@
 모바일 전용 화면으로 구현된 스터디카페 좌석 예약 시스템입니다.  
 사용자 편의성을 최우선으로 고려하여 직관적이고 간편한 예약 경험을 제공합니다.
 
-![Vue.js](https://img.shields.io/badge/Vue.js-2.x-4FC08D?logo=vue.js&logoColor=white)
+![Vue.js](https://img.shields.io/badge/Vue.js-3.x-4FC08D?logo=vue.js&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)
 ![Oracle](https://img.shields.io/badge/Oracle-Database-F80000?logo=oracle&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white)
